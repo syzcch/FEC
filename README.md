@@ -1,12 +1,11 @@
-# FEC
+# FEC codes(RDP, STAR, Reed Solomon)
 
 Some FEC codes such as RDP, Reed Solomon (P+Q), EVENODD, STAR for fault-tolerant in network communication and other conditions.
 There are several known algorithms that protect data against two or more disk failures in an array of disks. Among these are
 EVENODD, Reed Solomon (P+Q) erasure codes, DATUM, RDP and STAR.
 
 RDP is most similar to EVENODD. Both EVENODD/RDP and Reed-Solomon P+Q encoding compute normal row parity for one parity disk. However, they employ different
-techniques for encoding the second disk of redundant data. Both use exclusive-or operations, but Reed-Solomon encoding is much more computationally intensive than EVEN-
-ODD and RDP.
+techniques for encoding the second disk of redundant data. Both use exclusive-or operations, but Reed-Solomon encoding is much more computationally intensive than EVENODD and RDP.
 
 RDP shares many of the properties of EVENODD and Reed-Solomon encoding, in that it stores its redundant data(parity) separately on just two disks, and
 that data is stored in the clear on the other disks. Among the previously reported algorithms, EVENODD has the lowest computational cost for protection against two disk
