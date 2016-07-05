@@ -1,5 +1,7 @@
 package fec;
 
+import java.util.Arrays;
+
 /**
  * Erasure code RDP.Java version
  * @author Roger Song
@@ -505,7 +507,8 @@ public class rdp {
 		for(int i=0; i < disks; i++)
 		{
 			System.out.printf("idata:%d:  ",i);
-			System.out.println(idata[i]);
+//			System.out.println(idata[i]);
+			System.out.println(Arrays.toString(idata[i]));
 		}
 	}
 
