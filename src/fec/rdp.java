@@ -34,12 +34,12 @@ public class rdp {
 	}
 	
 	public rdp(int disks, int pnumRdp, int dataLength ){
-        this.pnumRdp = pnumRdp;
-        this.stripe_unit_size = dataLength;
-        this.w = pnumRdp - 1;
-        this.disks = disks;
-        this.allDisks = disks + TOLERENCE;
-        
+		this.pnumRdp = pnumRdp;
+		this.stripe_unit_size = dataLength;
+		this.w = pnumRdp - 1;
+		this.disks = disks;
+		this.allDisks = disks + TOLERENCE;
+		
 		idata = new char[disks][stripe_unit_size];
 		odata = new char[TOLERENCE][stripe_unit_size];
 		data = new char[allDisks][stripe_unit_size];
