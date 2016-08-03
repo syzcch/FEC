@@ -38,7 +38,8 @@ public class rscode {
     private static final int DATA_LENGTH = 1024; // default stripe size
     private int stripe_unit_size;  // stripe size
     private int rsNum;
-    private int[] inthis;
+ //   private int[] inthis;
+    private BitSet inthis;
     
     public rscode()
     {
@@ -51,12 +52,7 @@ public class rscode {
 
         // use allnum here, rs includes original data and redudant data
         rs = new char[allNum][stripe_unit_size];  
-
-        inthis = new int[allNum];
-        for(int i = 0; i < allNum; i++)
-        {
-            inthis[i] = 1;
-        }
+        inthis = new BitSet();
     }
     
     public rscode(int allnum, int rsnum, int dataLength)
@@ -70,18 +66,16 @@ public class rscode {
         
         // use allnum here, rs includes original data and redudant data
         rs = new char[allNum][stripe_unit_size];  
-        inthis = new int[allNum];
-        for(int i = 0; i < allNum; i++)
-        {
-            inthis[i] = 1;
-        }
+        inthis = new BitSet();
     }
     
     public void setErrData(int[] err)
     {
-        for(int i = 0; i < allNum; i++ )
+        for(int i = 0; i < err.length; i++ )
         {
-            inthis[i] = err[i];
+        	if(0 == err[i]){
+        		inthis.set(i);
+        	}
         }
     }
     
@@ -227,7 +221,7 @@ public class rscode {
 	        err = 0;
 	        for (int i = 0; i <rows && err <cols; i++) 
 	  	    {
-	  	        if (inthis[i]==0){
+	  	        if (inthis.get(i)){
 	               map[i]=-1;
 	  	        }
 		        else{
