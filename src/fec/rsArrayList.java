@@ -2,13 +2,12 @@ package fec;
 
 import java.util.*;
 
-
 /**
  * Erasure code RDP.Java version
  * @author Roger Song
  *
  */
-public class rscode {
+public class rsArrayList {
 //	private static final int prim_poly_32 = 020000007;
 //	private static final int prim_poly_16 = 0210013;
 	private static final int prim_poly_8 = 0435;
@@ -23,7 +22,8 @@ public class rscode {
 	static int Modar_Iam;
 	
 	private int num; // original data cols num
-	private char[][] rs; // original data
+//	private char[][] rs; // original data
+	List<ArrayList<Character>> rs;
 	private static final int FT_NUM = 2; //default checksum num
     private static int gf_already_setup;
     private int allNum;
@@ -33,7 +33,7 @@ public class rscode {
  //   private int[] inthis;
     private BitSet inthis;
     
-    public rscode()
+    public rsArrayList()
     {
         allNum = 6;
         rsNum = FT_NUM;
@@ -43,11 +43,16 @@ public class rscode {
         j_to_b_idx = 0;
 
         // use allnum here, rs includes original data and redudant data
-        rs = new char[allNum][stripe_unit_size];  
+//        rs = new char[allNum][stripe_unit_size];  
+        rs = new ArrayList<ArrayList<Character>>(allNum);
+		for(int i = 0; i < allNum; i++){
+			ArrayList<Character> tmpList = new ArrayList<Character>(stripe_unit_size);
+			rs.add(tmpList);
+		}
         inthis = new BitSet();
     }
     
-    public rscode(int allnum, int rsnum, int dataLength)
+    public rsArrayList(int allnum, int rsnum, int dataLength)
     {
         allNum = allnum;
         rsNum = rsnum;
@@ -57,7 +62,11 @@ public class rscode {
         j_to_b_idx = 0;
         
         // use allnum here, rs includes original data and redudant data
-        rs = new char[allNum][stripe_unit_size];  
+        rs = new ArrayList<ArrayList<Character>>(allNum);
+		for(int i = 0; i < allNum; i++){
+			ArrayList<Character> tmpList = new ArrayList<Character>(stripe_unit_size);
+			rs.add(tmpList);
+		} 
         inthis = new BitSet();
     }
     
@@ -78,7 +87,9 @@ public class rscode {
 	{
 		for(int i = 0; i < num; i++){
 			for(int j = 0; j < stripe_unit_size; j++){
-				rs[i][j]=(char) ('a' + i);
+				ArrayList<Character> tmpArrayList = rs.get(i);
+				tmpArrayList.add((char) ('a' + i));
+//				rs[i][j]=(char) ('a' + i);
 			}
 		}
 	}
@@ -92,7 +103,7 @@ public class rscode {
 		for(int i=0; i < num; i++)
 		{
 			System.out.printf("data:%d:  ",i);
-			System.out.println(rs[i]);
+			System.out.println(rs.get(i));
 		}
 	}
 	
@@ -105,7 +116,7 @@ public class rscode {
 		System.out.print("The res:");
         for(int i = num; i < allNum; i++)
         {
-        	System.out.println(rs[i]);
+        	System.out.println(rs.get(i));
         }
 	}
 	
@@ -137,19 +148,25 @@ public class rscode {
         int[] factors;
         int[] vdm;
         int z=rsNum,n=0;
-	    char[][] buffer;
+
+        List<ArrayList<Character>> buffer;
 
         n=num;
 	    cols=n;
 	    rows=z+n;
         factors = new int[n];
-        buffer = new char[n][stripe_unit_size];
+
+        buffer = new ArrayList<ArrayList<Character>>(n);
+		for(int i = 0; i < n; i++){
+			ArrayList<Character> tmpList = new ArrayList<Character>(stripe_unit_size);
+			buffer.add(tmpList);
+		} 
 
         for(int i=0;i<n;i++)
         {
      	   for(int l=0;l<stripe_unit_size;l++)
      	   {
-    		   buffer[i][l] = rs[i][l];
+    		   buffer.get(i).set(l, rs.get(i).get(l));;
      	   }
         }
 
@@ -164,9 +181,10 @@ public class rscode {
 
                 int value = 0;
                 for (int c = 0; c < num; c++) {
-                    value ^= multiply((char)vdm[iRow * num + c], rs[c][iByte]);
+                    value ^= multiply((char)vdm[iRow * num + c], rs.get(c).get(iByte));
                 }
-                rs[iRow][iByte] = (char) value;
+//                rs[iRow][iByte] = (char) value;
+                rs.get(iRow).set(iByte,(char) value);
             }
         }
 
@@ -181,15 +199,18 @@ public class rscode {
 	        int[] exists;
 	        int[] factors;
 	        int[] map;
-	        char[][] buffer;
+	        List<ArrayList<Character>> buffer;
 	        int[] id;
 	        int[] mat;
 	        int[] inv;
-	        char[][] buff = null;
-
+	        List<ArrayList<Character>> buff;
 	        int err = 0;
 
-	        buff = new char[allNum][stripe_unit_size];
+	        buff = new ArrayList<ArrayList<Character>>(allNum);
+			for(int i = 0; i < allNum; i++){
+				ArrayList<Character> tmpList = new ArrayList<Character>(stripe_unit_size);
+				buff.add(tmpList);
+			} 
 
 	        m=rsNum;
 	        n=num;
@@ -197,16 +218,19 @@ public class rscode {
 	        rows=m+n;
 	        vdm = gf_make_dispersal_matrix(rows, cols);
 	        exists = new int[rows];
-
 	        factors = new int[rows];
-
 	        map = new int[rows];
-	        buffer = new char[allNum][stripe_unit_size];
+	        
+	        buffer = new ArrayList<ArrayList<Character>>(allNum);
+			for(int i = 0; i < allNum; i++){
+				ArrayList<Character> tmpList = new ArrayList<Character>(stripe_unit_size);
+				buffer.add(tmpList);
+			} 
 	        
 	        for(int j = 0; j < (m+n); j++){
 	        	for(int i = 0; i<stripe_unit_size; i++)
 	        	{
-	        	    buff[j][i] = rs[j][i];
+	        	    buff.get(j).set(i, rs.get(j).get(i));
 	        	} 
 	        }
 
@@ -219,7 +243,7 @@ public class rscode {
 		        else{
 	               map[i] = err++;
 	               for(int l=0;l<stripe_unit_size;l++){ 
-	                   buffer[map[i]][l]=buff[i][l]; 
+	                   buffer.get(map[i]).set(l, buff.get(i).get(l));
 	               }
 	            }
 	  	    }
@@ -260,9 +284,9 @@ public class rscode {
 
 	                    int value = 0;
 	                    for (int c = 0; c < num; c++) {
-	                        value ^=multiply((char) inv[iRow * num + c], buffer[map[c]][iByte]);
+	                        value ^=multiply((char) inv[iRow * num + c], buffer.get(map[c]).get(iByte));
 	                    }
-	                    rs[iRow][iByte] = (char) value;
+	                    rs.get(iRow).set(iByte, (char) value);
 	                }
 	            }
 	        }
