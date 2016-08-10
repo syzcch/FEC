@@ -19,9 +19,6 @@ public class rdpArrayList {
     private List<ArrayList<Character>> idata;
     private List<ArrayList<Character>> odata;
     private List<ArrayList<Character>> data;
-//    private char[][] idata;
-//    private char[][] odata;
-//    private char[][] data;
 
 	public rdpArrayList(){
 		this.disks = 4;
@@ -47,12 +44,6 @@ public class rdpArrayList {
 			ArrayList<Character> tmpList = new ArrayList<Character>(stripe_unit_size);
 			data.add(tmpList);
 		}
-			
-/*
-		idata = new char[disks][stripe_unit_size];
-		odata = new char[TOLERENCE][stripe_unit_size];
-		data = new char[allDisks][stripe_unit_size];
-*/
 	}
 	
 	public rdpArrayList(int disks, int pnumRdp, int dataLength ){
@@ -62,11 +53,6 @@ public class rdpArrayList {
 		this.disks = disks;
 		this.allDisks = disks + TOLERENCE;
 		
-/*
-		idata = new char[disks][stripe_unit_size];
-		odata = new char[TOLERENCE][stripe_unit_size];
-		data = new char[allDisks][stripe_unit_size];
-*/
 		idata = new ArrayList<ArrayList<Character>>(disks);
 		for(int i = 0; i < disks; i++){
 			ArrayList<Character> tmpList = new ArrayList<Character>(stripe_unit_size);
@@ -95,13 +81,8 @@ public class rdpArrayList {
 			for(int j = 0; j < stripe_unit_size; j++){
 				ArrayList<Character> tmpArrayList = idata.get(i);
 				tmpArrayList.add((char) ('a' + i));
-//				idata.get(i).set(j,(char) ('a' + i));
-//				idata[i][j]=(char) ('a' + i);
 			}
 		}
-		
-//		System.arraycopy(idata[0], 0, odata[0], 0, stripe_unit_size);
-//		System.arraycopy(idata[0], 0, odata[1], 0, stripe_unit_size);
 		
 		odata.get(0).addAll(idata.get(0));
 		odata.get(1).addAll(idata.get(0));
@@ -128,12 +109,8 @@ public class rdpArrayList {
 				if (diag <= w - 1)
 				{
 					for (off = 0; off < packet_size; off++) {
-
-//						char tmpChar1 = (char) (odata.get(0).get(p * packet_size + off)^idata.get(d).get(p * packet_size + off));
 						odata.get(0).set(p * packet_size + off, (char)(odata.get(0).get(p * packet_size + off)^idata.get(d).get(p * packet_size + off)));
-//						odata[0][p * packet_size + off]^= idata[d][p * packet_size + off];
 						odata.get(1).set(diag * packet_size + off, (char)(odata.get(1).get(diag * packet_size + off) ^ idata.get(d).get(p * packet_size + off)));
-//						odata[1][diag * packet_size + off]^= idata[d][p * packet_size + off];
 					}
 					diag++;
 
@@ -144,7 +121,6 @@ public class rdpArrayList {
 					for (off = 0; off < packet_size; off++) {
 
 						odata.get(0).set(p * packet_size + off, (char)(odata.get(0).get(p * packet_size + off) ^ idata.get(d).get(p * packet_size + off)));
-	//					odata[0][p * packet_size + off]^= idata[d][p * packet_size + off];
 					}
 					diag = 0;
 					
@@ -157,7 +133,6 @@ public class rdpArrayList {
 			for (off = 0;off < packet_size;off++)
 			{
 				odata.get(1).set((p-1) * packet_size + off, (char)(odata.get(1).get((p-1) * packet_size + off) ^ odata.get(0).get(p * packet_size + off)));
-//				odata[1][(p - 1) * packet_size + off]^= odata[0][p * packet_size + off];
 
 			}
 		}
@@ -216,13 +191,11 @@ public class rdpArrayList {
 		for(int i = 0; i < stripe_unit_size; i++){
 
 			data.get(oneData).set(i,(char)0);
-//			data[oneData][i] = 0;
 		}
 		
 		if(errorNum == 1){
 			if(rError){
 				for(int i = 0; i < stripe_unit_size; i++){
-//					data[0][i] = 0;
 					data.get(0).set(i,(char)0);
 				}
 				
@@ -239,14 +212,10 @@ public class rdpArrayList {
 		else{
 			for(int i = 0; i < stripe_unit_size; i++){
 
-//				data[oneData][i] = 0;
-//				data[twoData][i] = 0;
 				data.get(oneData).set(i,(char)0);
 				data.get(twoData).set(i,(char)0);
 			}
 			rdp_decoding_rd(data, disks, stripe_unit_size, w, oneData, twoData);
-//			System.arraycopy(data[oneData], 0, idata[one], 0, stripe_unit_size);
-//			System.arraycopy(data[twoData], 0, idata[two], 0, stripe_unit_size);
 			Collections.copy(idata.get(one), data.get(oneData));
 			Collections.copy(idata.get(two), data.get(twoData));
 		}
@@ -274,11 +243,8 @@ public class rdpArrayList {
 		
 		rcount=stripe_unit_size;
 	
-//		rdata=g_data[0];
 		rdata=g_data.get(0);
-//		xdata=g_data[x];
 		xdata=g_data.get(x);
-//		ydata=g_data[y];
 		ydata=g_data.get(y);
 		gx = (x >= 3 ? x - 3 : pnumRdp - 1); 
 		gy = (y >= 3 ? y - 3 : pnumRdp - 1);
@@ -310,11 +276,9 @@ public class rdpArrayList {
 				row_count=stripe_unit_size;
 				row_index = (g - diag_disk + pnumRdp + 2) % pnumRdp;
 				coffset = (row_index + diag_disk - 2 + pnumRdp) % pnumRdp * packet_size;
-//				cdata=g_data[1];
 				cdata=g_data.get(1);
 				for(i = row_index * packet_size, j = coffset, k = 0;i < diag_count &&k < packet_size; i++, j++, k++)
 				{
-//					diag_data[i] = cdata[j];
 					diag_data.set(i, cdata.get(j));
 				}
 				for(c = 2; c < (disks+2); c++) {					
@@ -322,14 +286,11 @@ public class rdpArrayList {
 						continue;
 					ccount=stripe_unit_size;
 
-//		            cdata = g_data[c];
 					cdata = g_data.get(c);
 					coffset = (row_index + diag_disk - c + pnumRdp) 
 						% pnumRdp * packet_size;
 					for(i = row_index * packet_size, j = coffset, k = 0;i < diag_count && j < ccount &&k < packet_size; i++, j++, k++)
 					{
-
-//						diag_data[i] ^=  cdata[j];
 						diag_data.set(i, (char)(diag_data.get(i) ^ cdata.get(j)));
 					}		
 				}
@@ -342,7 +303,6 @@ public class rdpArrayList {
 				for(i = row_index * packet_size, j = coffset, k = 0; i < diag_count && j < ccount &&k < packet_size; i++, j++, k++)
 				{
 
-//					diag_data[i] ^=  cdata[j];
 					diag_data.set(i, (char)(diag_data.get(i) ^ cdata.get(j)));
 				}
 				
@@ -354,13 +314,10 @@ public class rdpArrayList {
 
 					ccount=stripe_unit_size;
 
-//		            cdata = g_data[c];	
 					cdata = g_data.get(c);
 					coffset = row_index * packet_size;
 					for(i = coffset, k = 0; i < ccount &&k < packet_size; i++, k++)
 					{	
-
-//						row_data[i] ^= cdata[i];
 						row_data.set(i, (char)(row_data.get(i) ^ cdata.get(i)));
 					}  
 
@@ -371,7 +328,6 @@ public class rdpArrayList {
 				
 				for(i = coffset, k = 0; i < count &&  k < packet_size; i++, k++)
 				{
-//					row_data[i] ^= cdata[i];
 					row_data.set(i, (char)(row_data.get(i) ^ cdata.get(i)));
 
 				}		
@@ -413,9 +369,8 @@ public class rdpArrayList {
 		gx = (x >= 3 ? x - 3 : pnumRdp - 1);
 		row_disk = pnumRdp + 1;
 		diag_disk = x;
-//		rdata=g_data[0];
+
 		rdata=g_data.get(0);
-//		xdata=g_data[x];
 		xdata=g_data.get(x);
 		row_data=rdata;
 		diag_data=xdata;
@@ -444,47 +399,38 @@ public class rdpArrayList {
 				int row_index;
 				ArrayList<Character> cdata;  
 				row_index = (g - diag_disk + pnumRdp + 2) % pnumRdp;
-			       coffset = (row_index + diag_disk - 2 + pnumRdp) % pnumRdp * packet_size;
-//				cdata=g_data[1];
+			    coffset = (row_index + diag_disk - 2 + pnumRdp) % pnumRdp * packet_size;
+
 				cdata=g_data.get(1);
 				for(i = row_index * packet_size, j = coffset, k = 0; i < diag_count && k < packet_size; i++, j++, k++)
 				{
-//					diag_data[i] = cdata[j];
 					diag_data.set(i, (char)(diag_data.get(i) ^ cdata.get(j)));
-	
 				}
 				for(c = 2; c <(disks+2); c++) {
 					if((int)c == diag_disk)
-						continue;
-				
+						continue;		
 					
 					ccount=stripe_unit_size;
-//					cdata = g_data[c];
 					cdata = g_data.get(c);
 					coffset = (row_index + diag_disk - c + pnumRdp) 
 						% pnumRdp * packet_size;
 	
 					for(i = row_index * packet_size, j = coffset, k = 0;i < diag_count && j < ccount && k < packet_size; i++, j++, k++)
 					{
-//						diag_data[i] ^=  cdata[j];
 						diag_data.set(i, (char)(diag_data.get(i) ^ cdata.get(j)));
-	
 					}
 						
 				}
 				if(pnumRdp + 1 != diag_disk)
 				{
 					ccount=stripe_unit_size;
-//					cdata = g_data[0];
 					cdata = g_data.get(0);
 					coffset = (row_index + diag_disk - 1 + pnumRdp) 
 						% pnumRdp * packet_size;
 	
 					for(i = row_index * packet_size, j = coffset, k = 0;i < diag_count && j < ccount && k < packet_size; i++, j++, k++)
 					{
-//						diag_data[i] ^=  cdata[j];
 						diag_data.set(i, (char)(diag_data.get(i) ^ cdata.get(j)));
-	
 					}
 				}
 				//row_parity calculate
@@ -492,14 +438,12 @@ public class rdpArrayList {
 					if((int)c == row_disk)
 						continue;
 	
-					ccount=stripe_unit_size;
-//					cdata = g_data[c];		
+					ccount=stripe_unit_size;	
 					cdata = g_data.get(c);
 					coffset = row_index * packet_size;
 	
 					for(i = coffset, k = 0;i < ccount && k < packet_size; i++, k++)
 					{	
-//						row_data[i] ^= cdata[i];
 						row_data.set(i, (char)(row_data.get(i) ^ cdata.get(i)));
 					}
 	
@@ -512,9 +456,9 @@ public class rdpArrayList {
 					cdata = diag_data;
 					coffset = row_index * packet_size;
 	
-					for(i = coffset, k = 0; i < count && k < packet_size; i++, k++)
-//						row_data[i] ^= cdata[i];
+					for(i = coffset, k = 0; i < count && k < packet_size; i++, k++){
 						row_data.set(i, (char)(row_data.get(i) ^ cdata.get(i)));
+					}
 	
 				}
 				//calculate the next g
@@ -541,7 +485,6 @@ public class rdpArrayList {
 		int packet_size = stripe_unit_size / w;
 		int i=0;
 	
-//		System.arraycopy(g_data[0], 0, g_data[k], 0, stripe_unit_size);
 		Collections.copy(g_data.get(k), g_data.get(0));
 		
 		for(i=2;i<(disks+2);i++)
@@ -551,7 +494,6 @@ public class rdpArrayList {
 			{	
 				for (off = 0; off < packet_size; off++)
 		 		{ 
-//		 		 	g_data[k][p * packet_size + off]^=g_data[i][p * packet_size + off];
 					g_data.get(k).set(p * packet_size + off, (char)(g_data.get(k).get(p * packet_size + off) ^ g_data.get(i).get(p * packet_size + off)));
 				}
 			}	

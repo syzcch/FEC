@@ -1,6 +1,20 @@
 package fec;
 
 import java.util.*;
+import static java.lang.System.out;
+
+
+enum en{
+	ONE("one one one"),
+	TWO("two two"),
+	THREE("three three");
+	private String des;
+	en(String ss){des = ss;}
+	en(){des="AA";}
+	public String getDes() {
+		return des;
+	}
+}
 
 /**
  * Erasure code RDP.Java version
@@ -22,7 +36,6 @@ public class rsArrayList {
 	static int Modar_Iam;
 	
 	private int num; // original data cols num
-//	private char[][] rs; // original data
 	List<ArrayList<Character>> rs;
 	private static final int FT_NUM = 2; //default checksum num
     private static int gf_already_setup;
@@ -30,7 +43,7 @@ public class rsArrayList {
     private static final int DATA_LENGTH = 1024; // default stripe size
     private int stripe_unit_size;  // stripe size
     private int rsNum;
- //   private int[] inthis;
+
     private BitSet inthis;
     
     public rsArrayList()
@@ -89,7 +102,6 @@ public class rsArrayList {
 			for(int j = 0; j < stripe_unit_size; j++){
 				ArrayList<Character> tmpArrayList = rs.get(i);
 				tmpArrayList.add((char) ('a' + i));
-//				rs[i][j]=(char) ('a' + i);
 			}
 		}
 	}
@@ -183,13 +195,15 @@ public class rsArrayList {
                 for (int c = 0; c < num; c++) {
                     value ^= multiply((char)vdm[iRow * num + c], rs.get(c).get(iByte));
                 }
-//                rs[iRow][iByte] = (char) value;
                 rs.get(iRow).set(iByte,(char) value);
             }
         }
 
      }
-	 
+	    /**
+		 * rs decoding main function. 
+		 * there is a simple testcase in setData func 
+		 */
 	    public void decoding_rs()
 	    {
 	        int[] vdm;
@@ -261,7 +275,6 @@ public class rsArrayList {
 	        	if(map[i] != -1){
 	        		exists[i] = 1;
 	        	}
-//	            exists[i] = (map[i] != -1);
 	        }
 	        cm = gf_condense_dispersal_matrix(vdm, exists, rows, cols);
 	        mat = cm.condensed_matrix;  
@@ -297,6 +310,10 @@ public class rsArrayList {
 	        return "rs";
 	    }
 	    
+	    /**
+		 * create Galois field. 
+		 * this function just run 1 time
+		 */
 	    void gf_modar_setup()
 	    {
 	        int j, b;
@@ -331,7 +348,6 @@ public class rsArrayList {
 	            res = b & 256;
 	            if(0 != res){
 //	            if (b & 256){
-	            
 	                b = (b ^ prim_poly_8) & 255;
 	            }
 	        }
@@ -685,6 +701,7 @@ public class rsArrayList {
 		    rsItem.setErrData(err);
 		    rsItem.decoding_rs();
 			rsItem.outputOrigin();
+			
 		}
 
 }
