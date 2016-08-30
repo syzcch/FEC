@@ -65,7 +65,7 @@ public class rscode {
     {
         for(int i = 0; i < err.length; i++ )
         {
-        	if(0 == err[i]){
+        	if(1 == err[i]){
         		inthis.set(i);
         	}
         }
@@ -646,7 +646,7 @@ public class rscode {
 
 		    // 0 means fault data
 		    for(int i=0;i<NUM;i++){
-		        err[i] = 1;
+		        err[i] = 0;
 		    }
 
 		    rsItem.setData();
@@ -655,9 +655,9 @@ public class rscode {
 			
 			
 			// testing 3 errors, error disk sequence number is 0,1,3
-			err[0]=0;
-		    err[1]=0;
-		    err[3]=0;
+			err[0]=1;
+		    err[1]=1;
+		    err[3]=1;
 		    rsItem.setErrData(err);
 		    rsItem.decoding_rs();
 			rsItem.outputOrigin();

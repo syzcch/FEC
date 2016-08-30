@@ -19,6 +19,8 @@ public class rdpArrayList {
     private List<ArrayList<Character>> idata;
     private List<ArrayList<Character>> odata;
     private List<ArrayList<Character>> data;
+    
+    private BitSet inthis;
 
 	public rdpArrayList(){
 		this.disks = 4;
@@ -26,9 +28,11 @@ public class rdpArrayList {
 		this.stripe_unit_size = DATA_LENGTH;
 		this.w = pnumRdp - 1;
 		this.allDisks = disks + TOLERENCE;
+		
+		inthis = new BitSet();
 
-		idata = new ArrayList<ArrayList<Character>>(disks);
-		for(int i = 0; i < disks; i++){
+		idata = new ArrayList<ArrayList<Character>>(allDisks);
+		for(int i = 0; i < allDisks; i++){
 			ArrayList<Character> tmpList = new ArrayList<Character>(stripe_unit_size);
 			idata.add(tmpList);
 		}
@@ -53,8 +57,10 @@ public class rdpArrayList {
 		this.disks = disks;
 		this.allDisks = disks + TOLERENCE;
 		
-		idata = new ArrayList<ArrayList<Character>>(disks);
-		for(int i = 0; i < disks; i++){
+		inthis = new BitSet();
+		
+		idata = new ArrayList<ArrayList<Character>>(allDisks);
+		for(int i = 0; i < allDisks; i++){
 			ArrayList<Character> tmpList = new ArrayList<Character>(stripe_unit_size);
 			idata.add(tmpList);
 		}
@@ -71,6 +77,16 @@ public class rdpArrayList {
 			data.add(tmpList);
 		}
 	}
+	
+    public void setErrData(int[] err)
+    {
+        for(int i = 0; i < err.length; i++ )
+        {
+        	if(1 == err[i]){
+        		inthis.set(i);
+        	}
+        }
+    }
 	
 
 	/**
@@ -137,6 +153,16 @@ public class rdpArrayList {
 			}
 		}
 
+		/*
+		idata.get(disks).clear();
+		idata.get(disks).addAll(odata.get(0));
+		idata.get(disks+1).clear();
+		idata.get(disks+1).addAll(odata.get(1));
+		*/
+		Collections.copy(odata.get(0), idata.get(disks));
+		Collections.copy(odata.get(1), idata.get(disks+1));
+//		System.arraycopy(odata[0], 0, idata[disks], 0, stripe_unit_size);
+//		System.arraycopy(odata[1], 0, idata[disks+1], 0, stripe_unit_size);
 
 	}
 	
@@ -161,16 +187,48 @@ public class rdpArrayList {
 	 * @param two
 	 * @param rError
 	 */
-	public void decoding(int errorNum, int one, int two, Boolean rError){
+	public void decoding(){
 		
-		int oneData = one + 2;
-		int twoData = two + 2;
+		int errNUm = 0;
+		int oneData = 0,one = 0;
+		int twoData = 0,two = 0;
+		boolean rError = false;
+		int errCount = 0;
+		
+		for(int i = 0; i < allDisks; i++){
+			if(inthis.get(i)){
+				errCount++;
+				if(1 == errCount){
+					oneData = i + 2;
+					one = i;
+					if(one < disks){
+						errNUm++;
+					}
+				}
+				else if(2 == errNUm){
+					twoData = i + 2;
+					two = i;
+					if(two < disks){
+						errNUm++;
+					}
+				}
+			}
+		}
+		
+		if(disks == two){
+			rError = true;
+		}
+		
 		// rdp 
-		if(errorNum > 2 || errorNum < 1){
-			System.out.println("Error NUM is too larger or smaller! It should be [1,2]");
+		if(0 == errNUm){
+			System.out.println("No Error data need be recovery!");
 			return;
 		}
-		if(errorNum == 2 && (one < 0 || one >= disks || two < 0 || one >= disks)){
+		if(errCount > 2){
+			System.out.println("Error NUM is too larger! It should be [1,2]");
+			return;
+		}
+		if(errNUm == 2 && (one < 0 || one >= disks || two < 0 || two >= disks)){
 			System.out.println("Error NUM is 2, but detailed error col numbers are wrong! Thay are should be [0,disks)");
 			return;
 		}
@@ -193,7 +251,7 @@ public class rdpArrayList {
 			data.get(oneData).set(i,(char)0);
 		}
 		
-		if(errorNum == 1){
+		if(errNUm == 1){
 			if(rError){
 				for(int i = 0; i < stripe_unit_size; i++){
 					data.get(0).set(i,(char)0);
@@ -550,11 +608,24 @@ public class rdpArrayList {
 	 */
 	public static void main(String[] args) {
 	
+		final int NUM = 6;
+		int[] err = new int[NUM];
+		
 		System.out.println("starting");
-		rdp rdpItem = new rdp();
+		rdpArrayList rdpItem = new rdpArrayList();
 
 		rdpItem.encoding();
 		rdpItem.outputOdata();
+		
+        for(int i=0;i<NUM;i++){
+            err[i] = 0;
+        }
+        
+ //       err[0]=1;
+//        err[2]=1;
+        err[4]=1;
+        
+        rdpItem.setErrData(err);
 		
 		// testing one error, error disk sequence number is 3, r checkout disk is not broken
 //		rdpItem.decoding(1, 2, -1, false);
@@ -565,7 +636,7 @@ public class rdpArrayList {
 //		rdpItem.outputOrigin();
 		
 		// testing 2 error, the error disks sequence number is 0 and 3, r checkout disk is not broken
-		rdpItem.decoding(2, 2, 3, true);
+		rdpItem.decoding();
 		rdpItem.outputOrigin();
 		
 	}

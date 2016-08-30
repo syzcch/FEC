@@ -1,6 +1,7 @@
 package fec;
 
 import java.util.Arrays;
+import java.util.BitSet;
 
 /**
  * Erasure code RDP.Java version
@@ -19,6 +20,8 @@ public class rdp {
     private char[][] idata;
     private char[][] odata;
     private char[][] data;
+    
+    private BitSet inthis;
 
 	public rdp(){
 		this.disks = 4;
@@ -27,9 +30,11 @@ public class rdp {
 		this.w = pnumRdp - 1;
 		this.allDisks = disks + TOLERENCE;
 
-		idata = new char[disks][stripe_unit_size];
+		idata = new char[allDisks][stripe_unit_size];
 		odata = new char[TOLERENCE][stripe_unit_size];
 		data = new char[allDisks][stripe_unit_size];
+		
+		inthis = new BitSet();
 
 	}
 	
@@ -40,11 +45,23 @@ public class rdp {
 		this.disks = disks;
 		this.allDisks = disks + TOLERENCE;
 		
-		idata = new char[disks][stripe_unit_size];
+		idata = new char[allDisks][stripe_unit_size];
 		odata = new char[TOLERENCE][stripe_unit_size];
 		data = new char[allDisks][stripe_unit_size];
+		
+		inthis = new BitSet();
 
 	}
+	
+    public void setErrData(int[] err)
+    {
+        for(int i = 0; i < err.length; i++ )
+        {
+        	if(1 == err[i]){
+        		inthis.set(i);
+        	}
+        }
+    }
 	
 
 	/**
@@ -111,6 +128,8 @@ public class rdp {
 			}
 		}
 
+		System.arraycopy(odata[0], 0, idata[disks], 0, stripe_unit_size);
+		System.arraycopy(odata[1], 0, idata[disks+1], 0, stripe_unit_size);
 
 	}
 	
@@ -135,22 +154,54 @@ public class rdp {
 	 * @param two
 	 * @param rError
 	 */
-	public void decoding(int errorNum, int one, int two, Boolean rError){
+	public void decoding(){
 		
-		int oneData = one + 2;
-		int twoData = two + 2;
+		int errNUm = 0;
+		int oneData = 0,one = 0;
+		int twoData = 0,two = 0;
+		boolean rError = false;
+		int errCount = 0;
+		
+		for(int i = 0; i < allDisks; i++){
+			if(inthis.get(i)){
+				errCount++;
+				if(1 == errCount){
+					oneData = i + 2;
+					one = i;
+					if(one < disks){
+						errNUm++;
+					}
+				}
+				else if(2 == errNUm){
+					twoData = i + 2;
+					two = i;
+					if(two < disks){
+						errNUm++;
+					}
+				}
+			}
+		}
+		
+		if(disks == two){
+			rError = true;
+		}
+		
 		// rdp 
-		if(errorNum > 2 || errorNum < 1){
-			System.out.println("Error NUM is too larger or smaller! It should be [1,2]");
+		if(0 == errNUm){
+			System.out.println("No Error data need be recovery!");
 			return;
 		}
-		if(errorNum == 2 && (one < 0 || one >= disks || two < 0 || one >= disks)){
+		if(errCount > 2){
+			System.out.println("Error NUM is too larger! It should be [1,2]");
+			return;
+		}
+		if(errNUm == 2 && (one < 0 || one >= disks || two < 0 || two >= disks)){
 			System.out.println("Error NUM is 2, but detailed error col numbers are wrong! Thay are should be [0,disks)");
 			return;
 		}
 		
-		System.arraycopy(odata[0], 0, data[0], 0, stripe_unit_size);
-		System.arraycopy(odata[1], 0, data[1], 0, stripe_unit_size);
+		System.arraycopy(idata[disks], 0, data[0], 0, stripe_unit_size);
+		System.arraycopy(idata[disks+1], 0, data[1], 0, stripe_unit_size);
 		
 		for(int i = 0; i < disks; i++){
 			System.arraycopy(idata[i], 0, data[i+2], 0, stripe_unit_size);
@@ -161,7 +212,7 @@ public class rdp {
 			data[oneData][i] = 0;
 		}
 		
-		if(errorNum == 1){
+		if(errNUm == 1){
 			if(rError){
 				for(int i = 0; i < stripe_unit_size; i++){
 					data[0][i] = 0;
@@ -517,12 +568,25 @@ public class rdp {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-	
+		
+		final int NUM = 6;
+		int[] err = new int[NUM];
+		
 		System.out.println("starting");
 		rdp rdpItem = new rdp();
 
 		rdpItem.encoding();
 		rdpItem.outputOdata();
+		
+        for(int i=0;i<NUM;i++){
+            err[i] = 0;
+        }
+        
+//        err[0]=1;
+ //       err[2]=1;
+        err[5]=1;
+        
+        rdpItem.setErrData(err);
 		
 		// testing one error, error disk sequence number is 3, r checkout disk is not broken
 //		rdpItem.decoding(1, 3, -1, false);
@@ -533,7 +597,8 @@ public class rdp {
 //		rdpItem.outputOrigin();
 		
 		// testing 2 error, the error disks sequence number is 0 and 3, r checkout disk is not broken
-		rdpItem.decoding(2, 0, 3, true);
+		rdpItem.decoding();
+//		rdpItem.decoding(2, 0, 3, true);
 		rdpItem.outputOrigin();
 	}
 

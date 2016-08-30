@@ -1,6 +1,7 @@
 package fec;
 
 import java.util.*;
+
 import static java.lang.System.out;
 
 
@@ -87,7 +88,7 @@ public class rsArrayList {
     {
         for(int i = 0; i < err.length; i++ )
         {
-        	if(0 == err[i]){
+        	if(1 == err[i]){
         		inthis.set(i);
         	}
         }
@@ -174,11 +175,12 @@ public class rsArrayList {
 			buffer.add(tmpList);
 		} 
 
-        for(int i=0;i<n;i++)
+        for(int i = 0; i < n; i++)
         {
-     	   for(int l=0;l<stripe_unit_size;l++)
+     	   for(int l = 0; l < stripe_unit_size; l++)
      	   {
-    		   buffer.get(i).set(l, rs.get(i).get(l));;
+//    		   buffer.get(i).set(l, (char)rs.get(i).get(l));
+     		  buffer.get(i).add((char)rs.get(i).get(l));;
      	   }
         }
 
@@ -195,7 +197,8 @@ public class rsArrayList {
                 for (int c = 0; c < num; c++) {
                     value ^= multiply((char)vdm[iRow * num + c], rs.get(c).get(iByte));
                 }
-                rs.get(iRow).set(iByte,(char) value);
+//                rs.get(iRow).set(iByte,(char) value);
+                rs.get(iRow).add((char) value);
             }
         }
 
@@ -244,7 +247,8 @@ public class rsArrayList {
 	        for(int j = 0; j < (m+n); j++){
 	        	for(int i = 0; i<stripe_unit_size; i++)
 	        	{
-	        	    buff.get(j).set(i, rs.get(j).get(i));
+//	        	    buff.get(j).set(i, rs.get(j).get(i));
+	        	    buff.get(j).add(rs.get(j).get(i));
 	        	} 
 	        }
 
@@ -257,7 +261,8 @@ public class rsArrayList {
 		        else{
 	               map[i] = err++;
 	               for(int l=0;l<stripe_unit_size;l++){ 
-	                   buffer.get(map[i]).set(l, buff.get(i).get(l));
+//	                   buffer.get(map[i]).set(l, buff.get(i).get(l));
+	                   buffer.get(map[i]).add( buff.get(i).get(l));
 	               }
 	            }
 	  	    }
@@ -680,13 +685,13 @@ public class rsArrayList {
 //			rscode *rsItem = new rscode();
 
 		    //all data is 10, checksum data is 3, data stripe length is 1024
-		    rscode rsItem = new rscode(10,3,1024);
+		    rsArrayList rsItem = new rsArrayList(10,3,1024);
 //		    rscode rsItem = new rscode();
 		    int[] err = new int[NUM];
 
 		    // 0 means fault data
 		    for(int i=0;i<NUM;i++){
-		        err[i] = 1;
+		        err[i] = 0;
 		    }
 
 		    rsItem.setData();
@@ -695,9 +700,9 @@ public class rsArrayList {
 			
 			
 			// testing 3 errors, error disk sequence number is 0,1,3
-			err[0]=0;
-		    err[1]=0;
-		    err[3]=0;
+//			err[0]=1;
+		    err[1]=1;
+		    err[3]=1;
 		    rsItem.setErrData(err);
 		    rsItem.decoding_rs();
 			rsItem.outputOrigin();
