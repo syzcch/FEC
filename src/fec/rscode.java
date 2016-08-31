@@ -8,7 +8,7 @@ import java.util.*;
  * @author Roger Song
  *
  */
-public class rscode {
+public class rscode implements fec{
 //	private static final int prim_poly_32 = 020000007;
 //	private static final int prim_poly_16 = 0210013;
 	private static final int prim_poly_8 = 0435;
@@ -74,7 +74,7 @@ public class rscode {
     /**
 	*  an easy test case
 	*/
-	void setData()
+	public void setData()
 	{
 		for(int i = 0; i < num; i++){
 			for(int j = 0; j < stripe_unit_size; j++){
@@ -83,10 +83,14 @@ public class rscode {
 		}
 	}
 	
+	public String showme(){
+		return "RS";
+	}
+	
     /**
 	 * for testing and debug.
 	 */
-	void outputOrigin(){
+	public void outputOrigin(){
 		
 		System.out.println("After decoding:");
 		for(int i=0; i < num; i++)
@@ -99,7 +103,7 @@ public class rscode {
     /**
 	 * for testing and debug.
 	 */
-	void outputOdata()
+	public void outputData()
 	{
 		
 		System.out.print("The res:");
@@ -128,7 +132,7 @@ public class rscode {
 	 * rs encoding main function. 
 	 * there is a simple testcase in setData func 
 	 */
-	 public void encoding_rs()
+	 public void encoding()
      {
 		if(allNum != num + rsNum){
 			throw new IllegalArgumentException("the addition of data disk num and checksum disk num should equal to allNum");
@@ -172,7 +176,7 @@ public class rscode {
 
      }
 	 
-	    public void decoding_rs()
+	    public void decoding()
 	    {
 	        int[] vdm;
 	        Condensed_Matrix cm;
@@ -650,8 +654,8 @@ public class rscode {
 		    }
 
 		    rsItem.setData();
-			rsItem.encoding_rs();
-			rsItem.outputOdata();
+			rsItem.encoding();
+			rsItem.outputData();
 			
 			
 			// testing 3 errors, error disk sequence number is 0,1,3
@@ -659,7 +663,7 @@ public class rscode {
 		    err[1]=1;
 		    err[3]=1;
 		    rsItem.setErrData(err);
-		    rsItem.decoding_rs();
+		    rsItem.decoding();
 			rsItem.outputOrigin();
 		}
 

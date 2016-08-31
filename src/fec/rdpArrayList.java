@@ -7,7 +7,7 @@ import java.util.*;
  * @author Roger Song
  *
  */
-public class rdpArrayList {
+public class rdpArrayList implements fec{
 	
     private int disks;
     private int stripe_unit_size;
@@ -173,7 +173,7 @@ public class rdpArrayList {
 	 */
 	public void encoding(){
 		
-		setData();
+//!		setData();
 		outputRes();
 		rdp_encoding();
 	}
@@ -578,7 +578,7 @@ public class rdpArrayList {
 	/**
 	 * for testing and debug.
 	 */
-	public void outputOdata(){
+	public void outputData(){
 		
 		System.out.println("The res:");
 		System.out.print("odata:0:  ");
@@ -615,7 +615,7 @@ public class rdpArrayList {
 		rdpArrayList rdpItem = new rdpArrayList();
 
 		rdpItem.encoding();
-		rdpItem.outputOdata();
+		rdpItem.outputData();
 		
         for(int i=0;i<NUM;i++){
             err[i] = 0;

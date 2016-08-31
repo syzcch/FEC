@@ -8,7 +8,7 @@ import java.util.BitSet;
  * @author Roger Song
  *
  */
-public class rdp {
+public class rdp implements fec{
 	
     private int disks;
     private int stripe_unit_size;
@@ -140,7 +140,7 @@ public class rdp {
 	 */
 	public void encoding(){
 		
-		setData();
+//!		setData();
 		outputRes();
 		rdp_encoding();
 	}
@@ -540,7 +540,7 @@ public class rdp {
 	/**
 	 * for testing and debug.
 	 */
-	public void outputOdata(){
+	public void outputData(){
 		
 		System.out.println("The res:");
 		System.out.print("odata:0:  ");
@@ -576,7 +576,7 @@ public class rdp {
 		rdp rdpItem = new rdp();
 
 		rdpItem.encoding();
-		rdpItem.outputOdata();
+		rdpItem.outputData();
 		
         for(int i=0;i<NUM;i++){
             err[i] = 0;
