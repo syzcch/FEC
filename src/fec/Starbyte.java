@@ -4,7 +4,7 @@ import static java.lang.System.out;
 
 import java.util.Arrays;
 
-public class starbyte implements fec{
+public class Starbyte implements Fec{
 //    private int  check_data_size;
     private int block_size;
     private int p;
@@ -19,7 +19,7 @@ public class starbyte implements fec{
     private static final int DATA_LENGTH = 1024; // default data length 
     private static final int PRIME = 257; // a prime number
     
-    public starbyte()
+    public Starbyte()
     {
         p = PRIME;
         data_disk_nbr = 4;
@@ -37,7 +37,7 @@ public class starbyte implements fec{
         }
     }
     
-    public starbyte(int disk, int prime, int dataLength )
+    public Starbyte(int disk, int prime, int dataLength )
     {
         p = prime;
         data_disk_nbr = disk;
@@ -228,9 +228,9 @@ public class starbyte implements fec{
     public void decoding()
 	{
 		int i,j,k,m,stripe;
-		int rs_nbr = 0;      /*×Ü¹²ÓĞrs_nbr³ö´í*/
-		int rs_data_nbr = 0; /*³ö´íµÄÅÌÖĞÓĞrs_data_nbr¸öÊÇÊı¾İÅÌ*/
-		int rs_check_nbr = 0;/*³ö´íµÄÅÌÖĞÓĞrs_check_nbr¸öÊÇĞ£ÑéÅÌ*/
+		int rs_nbr = 0;      /*æ€»å…±æœ‰rs_nbrå‡ºé”™*/
+		int rs_data_nbr = 0; /*å‡ºé”™çš„ç›˜ä¸­æœ‰rs_data_nbrä¸ªæ˜¯æ•°æ®ç›˜*/
+		int rs_check_nbr = 0;/*å‡ºé”™çš„ç›˜ä¸­æœ‰rs_check_nbrä¸ªæ˜¯æ ¡éªŒç›˜*/
 		int rs_disk1 = -1;
 		int rs_disk2 = -1;
 		int rs_disk3 = -1;
@@ -324,7 +324,7 @@ public class starbyte implements fec{
 			}
 			if(rs_check_nbr == 2)
 			{
-				if( restarts[data_disk_nbr] == 0)/*rowĞ£ÑéÅÌÃ»³ö´í*/
+				if( restarts[data_disk_nbr] == 0)/*rowæ ¡éªŒç›˜æ²¡å‡ºé”™*/
 				{
 	//				for( i = 0; i < check_data_size; i++)
 	                for( i = 0; i < stripe_unit_size; i++)
@@ -338,7 +338,7 @@ public class starbyte implements fec{
 					STAR_encoding_diag1();
 					STAR_encoding_diag2();
 				}
-				if(restarts[data_disk_nbr] == 1)/*rowĞ£ÑéÅÌ³ö´í*/
+				if(restarts[data_disk_nbr] == 1)/*rowæ ¡éªŒç›˜å‡ºé”™*/
 				{
 					if(restarts[data_disk_nbr + 2] == 1)
 					{
@@ -374,7 +374,7 @@ public class starbyte implements fec{
 	//                tmp_for_s1s2 = (int *)malloc(sizeof(int) * block_size);
 					tmp_for_s1s2 = new byte[block_size];
 	
-					for( i = 0; i < block_nbr; i++)/*Ëã³ös1 xor s2µÄÖµ*/
+					for( i = 0; i < block_nbr; i++)/*ç®—å‡ºs1 xor s2çš„å€¼*/
 					{
 						for( j = 0; j < block_size; j++)
 						{
@@ -383,8 +383,8 @@ public class starbyte implements fec{
 						}
 					}
 	
-	//				int **tmp;/*´æ·Å¸÷ÖÖs~~*/
-	                byte[][] tmp;/*´æ·Å¸÷ÖÖs~~*/
+	//				int **tmp;/*å­˜æ”¾å„ç§s~~*/
+	                byte[][] tmp;/*å­˜æ”¾å„ç§s~~*/
 	//				tmp = (int **)malloc( sizeof(int *) * 3);
 	                tmp = new byte[3][ p * block_size];
 	
@@ -436,7 +436,7 @@ public class starbyte implements fec{
 					{
 						tmp[2][i] ^= check_data[data_disk_nbr + 2][i];
 					}
-					/*ÖÁ´Ë,¸÷ÖÖs~~ÒÑ¾­Çó³ö,´æ·ÅÔÚ**tmpÖĞ*/
+					/*è‡³æ­¤,å„ç§s~~å·²ç»æ±‚å‡º,å­˜æ”¾åœ¨**tmpä¸­*/
 	
 	
 	//				int **tmp_for_xor;
@@ -457,7 +457,7 @@ public class starbyte implements fec{
 					/*    *tmp[0] = c[p][0] xor c[s][rs_disk2 - rs_disk1] 		  
 						  *tmp[i] = c[p][i] xor c[s][(rs_disk2 - rs_disk1 + i)%p]
 					  ...................................*/
-					k = p - 1 - ( rs_disk2 - rs_disk1);/*c[p][k] xor c[p][p-1] = tmp_for_xor[k],¶øÇÒc[rs_disk2][p-1]µÄÖµÈ«ÎªÁã*/
+					k = p - 1 - ( rs_disk2 - rs_disk1);/*c[p][k] xor c[p][p-1] = tmp_for_xor[k],è€Œä¸”c[rs_disk2][p-1]çš„å€¼å…¨ä¸ºé›¶*/
 					for( i = 0; i< block_size; i++)
 					{
 						check_data[data_disk_nbr][k * block_size + i] = tmp_for_xor[k][i];
@@ -475,7 +475,7 @@ public class starbyte implements fec{
 						k = i;
 						m--;
 					}
-					restarts[data_disk_nbr] = 0;/*µÚpÅÌÒÑ»Ö¸´*/
+					restarts[data_disk_nbr] = 0;/*ç¬¬pç›˜å·²æ¢å¤*/
 	
 					Evenodd_decoding( restarts);
 				}
@@ -492,12 +492,12 @@ public class starbyte implements fec{
 				}
 		}
 	
-	    if(rs_data_nbr == 3)/*ÖØÍ·Ï·--Èı¸öÊı¾İÅÌ´íµÄÇé¿ö*/
+	    if(rs_data_nbr == 3)/*é‡å¤´æˆ--ä¸‰ä¸ªæ•°æ®ç›˜é”™çš„æƒ…å†µ*/
 		{
 			int r,s,t,u,v;
 	
-	//		int **tmp;/*´æ·Å¸÷ÖÖs~~*/
-			byte[][] tmp;/*´æ·Å¸÷ÖÖs~~*/
+	//		int **tmp;/*å­˜æ”¾å„ç§s~~*/
+			byte[][] tmp;/*å­˜æ”¾å„ç§s~~*/
 	//		tmp = (int **)malloc( sizeof(int *) * 3);
 	        tmp = new byte[3][p * block_size];
 
@@ -518,7 +518,7 @@ public class starbyte implements fec{
 	//		tmp_for_xor = (int **)malloc( sizeof(int *) * p);
 	        tmp_for_xor = new byte[p][block_size];			
 	
-			/*ÏÈÇó³ö¸÷ÖÖs~~*/
+			/*å…ˆæ±‚å‡ºå„ç§s~~*/
 			for( i = 0; i < block_nbr; i++)
 			{
 				for( j = 0; j < block_size; j++)
@@ -588,7 +588,7 @@ public class starbyte implements fec{
 					else tmp[2][i * block_size + j] ^= tmp_for_s2[j];
 				}
 			}
-			/*ÖÁ´Ë,¸÷ÖÖs~~ÒÑ¾­Çó³ö,´æ·ÅÔÚ**tmpÖĞ*/
+			/*è‡³æ­¤,å„ç§s~~å·²ç»æ±‚å‡º,å­˜æ”¾åœ¨**tmpä¸­*/
 	
 			r = rs_disk1;
 			s = rs_disk2;
@@ -596,7 +596,7 @@ public class starbyte implements fec{
 			u = s - r;
 			v = t - s;
 	      
-			if( u == v)/*´¦ÀíÈı¸ö´íÎóµÄÊı¾İÅÌ¶Ô³ÆµÄÇé¿ö*/
+			if( u == v)/*å¤„ç†ä¸‰ä¸ªé”™è¯¯çš„æ•°æ®ç›˜å¯¹ç§°çš„æƒ…å†µ*/
 			{
 				for( i = 0; i < block_nbr + 1; i++)
 				{
@@ -610,7 +610,7 @@ public class starbyte implements fec{
 					  *tmp_for_xor[1] = c[s][1] xor c[s][(t-r+1)%p]
 					  *tmp_for_xor[i] = c[s][i] xor c[s][(t-r+i)%p]
 					  ...................................*/
-				k = p - 1 -( t - r );/*c[s][k] xor c[s][p-1] = tmp_for_xor[k],¶øÇÒc[s][p-1]µÄÖµÈ«ÎªÁã*/
+				k = p - 1 -( t - r );/*c[s][k] xor c[s][p-1] = tmp_for_xor[k],è€Œä¸”c[s][p-1]çš„å€¼å…¨ä¸ºé›¶*/
 				for( i = 0; i< block_size; i++)
 				{
 					check_data[s][k * block_size + i] = tmp_for_xor[k][i];
@@ -630,9 +630,9 @@ public class starbyte implements fec{
 				}
 			}
 	
-			else if( u != v)/*´¦Àí²»¶Ô³ÆµÄÇé¿ö*/
+			else if( u != v)/*å¤„ç†ä¸å¯¹ç§°çš„æƒ…å†µ*/
 			{	
-				int d;/*d¸öcross*/
+				int d;/*dä¸ªcross*/
 	//			int **flag;
 				byte[][] flag;
 						
@@ -647,12 +647,12 @@ public class starbyte implements fec{
 				
 				for(i = 0; i< d ; i++ )
 				{
-					/*Ğ±ÂÊÎª-1µÄ¶Ô½ÇÏß*/
+					/*æ–œç‡ä¸º-1çš„å¯¹è§’çº¿*/
 					flag[0][(0 + i * v) % p] ++;
 					flag[1][(s - r + i * v) % p]++;
 					flag[2][(t - r + i * v) % p]++;
 		
-					/*Ğ±ÂÊÎª+1µÄ¶Ô½ÇÏß*/
+					/*æ–œç‡ä¸º+1çš„å¯¹è§’çº¿*/
 					flag[2][(0 + i * v) % p]++;
 					flag[1][(t-s+i * v) % p]++;
 					flag[0][(t-r+i * v) % p]++;
@@ -660,15 +660,15 @@ public class starbyte implements fec{
 					/**/
 					
 				}
-				/*É¨Ãèflag[3][p-1],0ºÍ2µÄÖ±½ÓºöÊÓ ,¿´1µÄ¸öÊı·Ö²¼*/
-				/*¶øÇÒÎÒÃÇÖªµÀ,µÚÒ»´ÎÕÒ³öµÄ¿Ï¶¨ÊÇa[s][u] XOR a[s][p-u]µÄ½á¹û*/
+				/*æ‰«æflag[3][p-1],0å’Œ2çš„ç›´æ¥å¿½è§† ,çœ‹1çš„ä¸ªæ•°åˆ†å¸ƒ*/
+				/*è€Œä¸”æˆ‘ä»¬çŸ¥é“,ç¬¬ä¸€æ¬¡æ‰¾å‡ºçš„è‚¯å®šæ˜¯a[s][u] XOR a[s][p-u]çš„ç»“æœ*/
 				int[] count;
 	//			byte[] count;
 	//			count = (int*)malloc(sizeof(int) * p);
 	//			memset(count, 0, sizeof(int)*p);
 	            count = new int[p];
 	
-				for(i = 0;i < p; i++)/*¿´µÚiĞĞÓĞ¼¸¸ö1*/
+				for(i = 0;i < p; i++)/*çœ‹ç¬¬iè¡Œæœ‰å‡ ä¸ª1*/
 				{
 					for(j = 0; j<3; j++)
 					{
@@ -677,7 +677,7 @@ public class starbyte implements fec{
 					}
 				}
 	
-				for( m = 0; m < block_nbr + 1; m++)/*Ëã¸÷a xor a */
+				for( m = 0; m < block_nbr + 1; m++)/*ç®—å„a xor a */
 				{
 					for( i = 0; i < p ; i++)
 					{
@@ -696,11 +696,11 @@ public class starbyte implements fec{
 						}
 					}
 				}
-				/*ÖÁ´Ë,*tmp_for_xor[0] = c[s][u] xor c[s][p-u]  
+				/*è‡³æ­¤,*tmp_for_xor[0] = c[s][u] xor c[s][p-u]  
 				       *tmp_for_xor[i] = c[s][(u + i)%p] xor c[s][ ( p-u+i)%p ]
 					   ...............................................*/
 				i = u - 1;
-				k = (u + i) % p;/*c[s][k] xor c[s][p-1] = tmp_for_xor[k],¶øÇÒc[s][p-1]µÄÖµÈ«ÎªÁã*/
+				k = (u + i) % p;/*c[s][k] xor c[s][p-1] = tmp_for_xor[k],è€Œä¸”c[s][p-1]çš„å€¼å…¨ä¸ºé›¶*/
 				for( j = 0; j< block_size; j++)
 				{
 					check_data[s][k * block_size + j] = tmp_for_xor[i][j];
@@ -718,30 +718,30 @@ public class starbyte implements fec{
 					k = (u + i) % p;
 					m--;
 				}
-			/* À´¸ös,Èç¹ûcount[i]==3,Ôòs = s XOR s[0][i],ÕâÑù, Ò»ĞĞÓĞÈı¸öµÄÇé¿ö¾Í¶¼ÕÒ³öÀ´ÁË */
-			/*ÔÙ¿´count[u]Óëcount[p-u]ÊÇµÈÓÚ1»¹ÊÇµÈÓÚ2*/
+			/* æ¥ä¸ªs,å¦‚æœcount[i]==3,åˆ™s = s XOR s[0][i],è¿™æ ·, ä¸€è¡Œæœ‰ä¸‰ä¸ªçš„æƒ…å†µå°±éƒ½æ‰¾å‡ºæ¥äº† */
+			/*å†çœ‹count[u]ä¸count[p-u]æ˜¯ç­‰äº1è¿˜æ˜¯ç­‰äº2*/
 			/*
 			if((count[u] == 1) && (count[p-u]==1))
 			{
-				Ôòa[s][u] XOR a[s][p-u] = s XOR s[1][t] XOR s[2][(p-r)%p] XOR s[1][(t+v)%p] XOR ......
+				åˆ™a[s][u] XOR a[s][p-u] = s XOR s[1][t] XOR s[2][(p-r)%p] XOR s[1][(t+v)%p] XOR ......
 			}
 			else if(count[u] ==2)
 			{
-			  Ôòs[0][u]ºÍs[0][p-u]¶¼µÃËãÉÏ
+			  åˆ™s[0][u]å’Œs[0][p-u]éƒ½å¾—ç®—ä¸Š
 			}
 			*/
 			}
 	
-			restarts[s] = 0;/*sÅÌÒÑ»Ö¸´*/
+			restarts[s] = 0;/*sç›˜å·²æ¢å¤*/
 	
 			Evenodd_decoding(restarts);
 	    }
 	}
     
 
-    void Evenodd_decoding_1(int rs_disk1, int rs_disk2)/*Ğ£ÑéÅÌÊÇ:ĞĞĞ£ÑéÅÌÓëĞ±ÂÊÎª¸º1µÄ¶Ô½ÇÏßĞ£Ñé;Ààevenodd*/
-    {/*ÕâÀïÖ»´¦ÀíÁ½ÖÖÇé¿ö:1,Ò»¸öÊı¾İÅÌ´í+ĞĞĞ£ÑéÅÌ´í
-    					  2,Á½¸öÊı¾İÅÌ´í*/
+    void Evenodd_decoding_1(int rs_disk1, int rs_disk2)/*æ ¡éªŒç›˜æ˜¯:è¡Œæ ¡éªŒç›˜ä¸æ–œç‡ä¸ºè´Ÿ1çš„å¯¹è§’çº¿æ ¡éªŒ;ç±»evenodd*/
+    {/*è¿™é‡Œåªå¤„ç†ä¸¤ç§æƒ…å†µ:1,ä¸€ä¸ªæ•°æ®ç›˜é”™+è¡Œæ ¡éªŒç›˜é”™
+    					  2,ä¸¤ä¸ªæ•°æ®ç›˜é”™*/
     	
     	int i,j,stripe,k;
 //    	int *tmp;
@@ -756,7 +756,7 @@ public class starbyte implements fec{
 //    	memset(tmp_for_s, 0, block_size *sizeof(int));
         tmp_for_s = new byte[block_size];
 
-    	if(rs_disk1 < data_disk_nbr && rs_disk2 == data_disk_nbr)/*Ò»¸öÊı¾İÅÌ´í+ĞĞĞ£ÑéÅÌ´í*/
+    	if(rs_disk1 < data_disk_nbr && rs_disk2 == data_disk_nbr)/*ä¸€ä¸ªæ•°æ®ç›˜é”™+è¡Œæ ¡éªŒç›˜é”™*/
     	{
 			for(stripe = 0; stripe < block_nbr+1; stripe++)
 			{
@@ -770,9 +770,9 @@ public class starbyte implements fec{
 					}
 				}
 			}
-			/*¸÷ÌõÎÆµÄ¶Ô½ÇÏßĞ£Ñé½á¹û·ÅÔÚtmpÖĞ,s»¹Ã»ÓĞ´¦Àí*/
-			/*ÕÒ³ös*/
-			stripe = ( p - rs_disk1 - 1) % p;/*rs_disk1Ã»ÓĞ²ÎÓëµÚstripe¸öÌõÎÆµÄĞ£Ñés*/
+			/*å„æ¡çº¹çš„å¯¹è§’çº¿æ ¡éªŒç»“æœæ”¾åœ¨tmpä¸­,sè¿˜æ²¡æœ‰å¤„ç†*/
+			/*æ‰¾å‡ºs*/
+			stripe = ( p - rs_disk1 - 1) % p;/*rs_disk1æ²¡æœ‰å‚ä¸ç¬¬stripeä¸ªæ¡çº¹çš„æ ¡éªŒs*/
 			
 			for( i = 0; i < block_size; i++)
 			{
@@ -791,7 +791,7 @@ public class starbyte implements fec{
 			}
 			for( i = 0; i < block_size; i++)
 				tmp[block_nbr * block_size + i]^=tmp_for_s[i];
-			/*ÖÁ´Ë,¸Ã»Ö¸´µÄÊı¾İ¶¼ÒÑ·ÅÔÚtmpÖĞÁË.*/
+			/*è‡³æ­¤,è¯¥æ¢å¤çš„æ•°æ®éƒ½å·²æ”¾åœ¨tmpä¸­äº†.*/
 				
 			for( i = 0; i < p; i++)
 			{
@@ -823,7 +823,7 @@ public class starbyte implements fec{
     			{
     				check_data[p + 1][i * block_size + j] ^= tmp_for_s[j];
     			}
-    		}ÒÔÉÏ¶¼ÊÇÔÚ´¦Àís*/
+    		}ä»¥ä¸Šéƒ½æ˜¯åœ¨å¤„ç†s*/
 
     		for(stripe = 0; stripe < block_nbr+1; stripe++)
     		{
@@ -848,23 +848,23 @@ public class starbyte implements fec{
     		}
     		for( j = 0; j< block_size; j++)
     			tmp[ block_nbr * block_size + j] ^= tmp_for_s[j];
-    		/*¸÷ÌõÎÆµÄs~ ·ÅÔÚtmpÖĞ*/
+    		/*å„æ¡çº¹çš„s~ æ”¾åœ¨tmpä¸­*/
 
-    		stripe = ( p - rs_disk1 - 1) % p;/*rs_disk1Î´²ÎÓëµÚstripe¸öÌõÎÆµÄ¶Ô½ÇÏßĞ£Ñé*/
+    		stripe = ( p - rs_disk1 - 1) % p;/*rs_disk1æœªå‚ä¸ç¬¬stripeä¸ªæ¡çº¹çš„å¯¹è§’çº¿æ ¡éªŒ*/
 
-//    		memmove( tmp_for_s, tmp + stripe * block_size, block_size* sizeof(int));/*ÓÉÓÚºóÃæÓÃ²»µ½sÁË,ËùÒÔ*tmp_for_sÕâÀïÓÃÀ´´æ·Å¸÷ÖÖÖĞ¼äÖµ*/
+//    		memmove( tmp_for_s, tmp + stripe * block_size, block_size* sizeof(int));/*ç”±äºåé¢ç”¨ä¸åˆ°säº†,æ‰€ä»¥*tmp_for_sè¿™é‡Œç”¨æ¥å­˜æ”¾å„ç§ä¸­é—´å€¼*/
 //            memmove( tmp_for_s, tmp + stripe * block_size, block_size* sizeof(char));
             System.arraycopy(tmp, stripe * block_size, tmp_for_s , 0, block_size);
             
     		while(true)
     		{
-    			k = (stripe + rs_disk2 + p) % p;/*µÚrs_disk2¸öÊı¾İÅÌµÄµÚk¿éÔÚµÚstripe¸öÌõÎÆ*/
+    			k = (stripe + rs_disk2 + p) % p;/*ç¬¬rs_disk2ä¸ªæ•°æ®ç›˜çš„ç¬¬kå—åœ¨ç¬¬stripeä¸ªæ¡çº¹*/
     			if( k == block_nbr)
     				break;
 //    			memmove( check_data[rs_disk2] + k * block_size, tmp_for_s, block_size * sizeof(int));
  //               memmove( check_data[rs_disk2] + k * block_size, tmp_for_s, block_size * sizeof(char));
                 System.arraycopy(tmp_for_s, 0, check_data[rs_disk2] , k * block_size, block_size);
-    			/*ÔÙÍ¨¹ıµÚk¿éµÄĞĞĞ£ÑéÀ´»Ö¸´rs_disk1ÖĞµÄµÚk¿é*/
+    			/*å†é€šè¿‡ç¬¬kå—çš„è¡Œæ ¡éªŒæ¥æ¢å¤rs_disk1ä¸­çš„ç¬¬kå—*/
     			for( i = 0; i < block_size; i++)
     			{
     				for( j = 0 ; j <= data_disk_nbr ; j++)
@@ -872,7 +872,7 @@ public class starbyte implements fec{
     						check_data[rs_disk1][k * block_size + i] ^= check_data[j][k * block_size + i];
     			}
 
-    			stripe = (k - rs_disk1 + p) % p;/*rs_disk1ÅÌµÄµÚk¿éÔÚµÚstripe¸öÌõÎÆ*/
+    			stripe = (k - rs_disk1 + p) % p;/*rs_disk1ç›˜çš„ç¬¬kå—åœ¨ç¬¬stripeä¸ªæ¡çº¹*/
 
     			for( i = 0; i < block_size; i++)
     			{
@@ -882,7 +882,7 @@ public class starbyte implements fec{
     	}
     }
 
-    void Evenodd_decoding( int[] restarts)/*´Ëº¯ÊıÓÃÀ´»Ö¸´¿ÉÓÃEVENODDÔ­Àí´¦ÀíµÄ1-2´íµÄÇé¿ö*/
+    void Evenodd_decoding( int[] restarts)/*æ­¤å‡½æ•°ç”¨æ¥æ¢å¤å¯ç”¨EVENODDåŸç†å¤„ç†çš„1-2é”™çš„æƒ…å†µ*/
     {
     	int i,j,stripe,k;
     	int rs_disk1 = -1;
@@ -920,19 +920,19 @@ public class starbyte implements fec{
     	}
     	
 
-        if(rs_disk1 >= data_disk_nbr)/*´ËÖÖÇé¿ö:Êı¾İÅÌÃ»ÓĞ³ö´í*/
+        if(rs_disk1 >= data_disk_nbr)/*æ­¤ç§æƒ…å†µ:æ•°æ®ç›˜æ²¡æœ‰å‡ºé”™*/
     	{
-    		if(restarts[data_disk_nbr] == 1)/*ĞĞĞ£Ñé*/
+    		if(restarts[data_disk_nbr] == 1)/*è¡Œæ ¡éªŒ*/
     		{
     			STAR_encoding_row();
     		}
-    		if(restarts[data_disk_nbr + 1] == 1)/*Ğ±ÂÊÎªÕı1µÄ¶Ô½ÇÏßĞ£Ñé*/
+    		if(restarts[data_disk_nbr + 1] == 1)/*æ–œç‡ä¸ºæ­£1çš„å¯¹è§’çº¿æ ¡éªŒ*/
     		{
     			STAR_encoding_diag1();
     		}
     	}
 
-    	if(rs_disk1 < data_disk_nbr && rs_nbr == 1)/*Ö»ÓĞÒ»¸öÊı¾İÅÌ³ö´íµÄÇé¿ö*/
+    	if(rs_disk1 < data_disk_nbr && rs_nbr == 1)/*åªæœ‰ä¸€ä¸ªæ•°æ®ç›˜å‡ºé”™çš„æƒ…å†µ*/
     	{
 //    		for( i = 0; i < check_data_size; i++) 
             for( i = 0; i < stripe_unit_size; i++) 
@@ -947,12 +947,12 @@ public class starbyte implements fec{
     		}
     	}
 
-    	if(rs_nbr == 2 && rs_disk1 < data_disk_nbr && rs_disk2 >= data_disk_nbr)/*Ò»¸öÊı¾İÅÌ´í+Ò»¸öĞ£ÑéÅÌ´íµÄÇé¿ö*/
+    	if(rs_nbr == 2 && rs_disk1 < data_disk_nbr && rs_disk2 >= data_disk_nbr)/*ä¸€ä¸ªæ•°æ®ç›˜é”™+ä¸€ä¸ªæ ¡éªŒç›˜é”™çš„æƒ…å†µ*/
     	{
-    		if( rs_disk2 == data_disk_nbr + 1)/*´íÎóµÄĞ£ÑéÅÌÊÇĞ±ÂÊÎª1µÄ¶Ô½ÇÏßĞ£Ñé*/
+    		if( rs_disk2 == data_disk_nbr + 1)/*é”™è¯¯çš„æ ¡éªŒç›˜æ˜¯æ–œç‡ä¸º1çš„å¯¹è§’çº¿æ ¡éªŒ*/
     		{
-//    			for(i = 0; i < check_data_size; i++)/*ÏÈÓÃĞĞĞ£Ñé»Ö¸´Êı¾İÅÌ*/
-                for(i = 0; i < stripe_unit_size; i++)/*ÏÈÓÃĞĞĞ£Ñé»Ö¸´Êı¾İÅÌ*/
+//    			for(i = 0; i < check_data_size; i++)/*å…ˆç”¨è¡Œæ ¡éªŒæ¢å¤æ•°æ®ç›˜*/
+                for(i = 0; i < stripe_unit_size; i++)/*å…ˆç”¨è¡Œæ ¡éªŒæ¢å¤æ•°æ®ç›˜*/
     				for(j = 0; j <= data_disk_nbr; j++)
     					if( j != rs_disk1)
     						check_data[rs_disk1][i] ^= check_data[j][i];
@@ -987,9 +987,9 @@ public class starbyte implements fec{
     				}
     			}
 
-    			/*¸÷ÌõÎÆµÄ¶Ô½ÇÏßĞ£Ñé½á¹û·ÅÔÚtmpÖĞ,s»¹Ã»ÓĞ´¦Àí*/
-    			/*ÕÒ³ös*/
-    			stripe = (rs_disk1 + p - 1) % p;/*rs_disk1Ã»ÓĞ²ÎÓëµÚstripe¸öÌõÎÆµÄĞ£Ñés*/
+    			/*å„æ¡çº¹çš„å¯¹è§’çº¿æ ¡éªŒç»“æœæ”¾åœ¨tmpä¸­,sè¿˜æ²¡æœ‰å¤„ç†*/
+    			/*æ‰¾å‡ºs*/
+    			stripe = (rs_disk1 + p - 1) % p;/*rs_disk1æ²¡æœ‰å‚ä¸ç¬¬stripeä¸ªæ¡çº¹çš„æ ¡éªŒs*/
     			for( i = 0; i < block_size; i++)
     			{
     				if( stripe == p - 1)
@@ -1007,7 +1007,7 @@ public class starbyte implements fec{
     			}
     			for( j = 0; j < block_size; j++)
     				tmp[ block_nbr * block_size + j] ^= tmp_for_s[j];
-    			/*ÖÁ´Ë,¸Ã»Ö¸´µÄÊı¾İ¶¼ÒÑ·ÅÔÚtmpÖĞÁË.*/
+    			/*è‡³æ­¤,è¯¥æ¢å¤çš„æ•°æ®éƒ½å·²æ”¾åœ¨tmpä¸­äº†.*/
     				
     			for( i = 0; i < p; i++)
     			{
@@ -1024,7 +1024,7 @@ public class starbyte implements fec{
     		}
     	}
 
-    	if(rs_nbr == 2 && rs_disk1 < data_disk_nbr && rs_disk2 < data_disk_nbr)/*Á½¸öÊı¾İÅÌ³ö´í*/
+    	if(rs_nbr == 2 && rs_disk1 < data_disk_nbr && rs_disk2 < data_disk_nbr)/*ä¸¤ä¸ªæ•°æ®ç›˜å‡ºé”™*/
     	{
     		
 //    		int *tmp;
@@ -1033,7 +1033,7 @@ public class starbyte implements fec{
 //    		memset(tmp, 0, p*block_size*sizeof(int));
             tmp = new byte[p * block_size];
 
-    		/*ÏÈÍ¨¹ıĞĞĞ£ÑéÓë¶Ô½ÇÏßĞ£ÑéËã³ös*/
+    		/*å…ˆé€šè¿‡è¡Œæ ¡éªŒä¸å¯¹è§’çº¿æ ¡éªŒç®—å‡ºs*/
 //    		int *tmp_for_s;
             byte[] tmp_for_s;
 //    		tmp_for_s = (int *)malloc(sizeof(int) * block_size);
@@ -1071,16 +1071,16 @@ public class starbyte implements fec{
     		}
     		for( j = 0; j < block_size; j++)
     			tmp[ block_nbr * block_size + j] ^= tmp_for_s[j];
-    		/*¸÷ÌõÎÆµÄs~·ÅÔÚtmpÖĞ*/
+    		/*å„æ¡çº¹çš„s~æ”¾åœ¨tmpä¸­*/
 
     		
-    		stripe = (rs_disk1 + p - 1) % p;/*rs_disk1Î´²ÎÓëµÚstripe¸öÌõÎÆµÄ¶Ô½ÇÏßĞ£Ñé*/
-//    		memmove( tmp_for_s, tmp + stripe * block_size, block_size * sizeof(int));/*ÓÉÓÚºóÃæÓÃ²»µ½sÁË,ËùÒÔ*tmp_for_sÕâÀïÓÃÀ´´æ·Å¸÷ÖÖÖĞ¼äÖµ*/
-//    		memmove( tmp_for_s, tmp + stripe * block_size, block_size * sizeof(char));/*ÓÉÓÚºóÃæÓÃ²»µ½sÁË,ËùÒÔ*tmp_for_sÕâÀïÓÃÀ´´æ·Å¸÷ÖÖÖĞ¼äÖµ*/
+    		stripe = (rs_disk1 + p - 1) % p;/*rs_disk1æœªå‚ä¸ç¬¬stripeä¸ªæ¡çº¹çš„å¯¹è§’çº¿æ ¡éªŒ*/
+//    		memmove( tmp_for_s, tmp + stripe * block_size, block_size * sizeof(int));/*ç”±äºåé¢ç”¨ä¸åˆ°säº†,æ‰€ä»¥*tmp_for_sè¿™é‡Œç”¨æ¥å­˜æ”¾å„ç§ä¸­é—´å€¼*/
+//    		memmove( tmp_for_s, tmp + stripe * block_size, block_size * sizeof(char));/*ç”±äºåé¢ç”¨ä¸åˆ°säº†,æ‰€ä»¥*tmp_for_sè¿™é‡Œç”¨æ¥å­˜æ”¾å„ç§ä¸­é—´å€¼*/
     		System.arraycopy(tmp, stripe * block_size, tmp_for_s, 0, block_size);	
     		while(true)
     		{
-    			k = (stripe - rs_disk2 + p) % p;/*µÚrs_disk2¸öÊı¾İÅÌµÄµÚk¿éÔÚµÚstripe¸öÌõÎÆ*/
+    			k = (stripe - rs_disk2 + p) % p;/*ç¬¬rs_disk2ä¸ªæ•°æ®ç›˜çš„ç¬¬kå—åœ¨ç¬¬stripeä¸ªæ¡çº¹*/
     			if( k == block_nbr)
     				break;
 //    			memmove( check_data[rs_disk2] + k * block_size, tmp_for_s, block_size * sizeof(int));
@@ -1088,7 +1088,7 @@ public class starbyte implements fec{
                 System.arraycopy(tmp_for_s, 0, check_data[rs_disk2],  k * block_size, block_size);	
 
 
-    			/*ÔÙÍ¨¹ıµÚk¿éµÄĞĞĞ£ÑéÀ´»Ö¸´rs_disk1ÖĞµÄµÚk¿é*/
+    			/*å†é€šè¿‡ç¬¬kå—çš„è¡Œæ ¡éªŒæ¥æ¢å¤rs_disk1ä¸­çš„ç¬¬kå—*/
     			for( j = 0; j < block_size; j++)
     			{
     				for( i = 0; i <= data_disk_nbr; i++)
@@ -1097,7 +1097,7 @@ public class starbyte implements fec{
     			}
     			
 
-    			stripe = (k + rs_disk1 + p) % p;/*rs_disk1ÅÌµÄµÚk¿éÔÚµÚstripe¸öÌõÎÆ*/
+    			stripe = (k + rs_disk1 + p) % p;/*rs_disk1ç›˜çš„ç¬¬kå—åœ¨ç¬¬stripeä¸ªæ¡çº¹*/
 
     			for( j = 0; j < block_size; j++)
     			{
@@ -1118,7 +1118,7 @@ public class starbyte implements fec{
 
         final int NUM = 7;
         int[] err = new int[NUM];
-        starbyte starItem = new starbyte();
+        Starbyte starItem = new Starbyte();
 //        star starItem = new star(6,257,1024);
         
         starItem.setData();
