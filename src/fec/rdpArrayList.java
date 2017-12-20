@@ -7,7 +7,7 @@ import java.util.*;
  * @author Roger Song
  *
  */
-public class rdpArrayList implements fec{
+public class RdpArrayList implements Fec{
 	
     private int disks;
     private int stripe_unit_size;
