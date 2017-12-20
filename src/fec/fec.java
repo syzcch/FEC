@@ -1,6 +1,6 @@
 package fec;
 
-public interface fec {
+public interface Fec {
 	
 	public void setErrData(int[] err);
 	public void setData();
