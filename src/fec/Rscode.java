@@ -8,7 +8,7 @@ import java.util.*;
  * @author Roger Song
  *
  */
-public class rscode implements fec{
+public class Rscode implements Fec{
 //	private static final int prim_poly_32 = 020000007;
 //	private static final int prim_poly_16 = 0210013;
 	private static final int prim_poly_8 = 0435;
@@ -33,7 +33,7 @@ public class rscode implements fec{
  //   private int[] inthis;
     private BitSet inthis;
     
-    public rscode()
+    public Rscode()
     {
         allNum = 6;
         rsNum = FT_NUM;
@@ -47,7 +47,7 @@ public class rscode implements fec{
         inthis = new BitSet();
     }
     
-    public rscode(int allnum, int rsnum, int dataLength)
+    public Rscode(int allnum, int rsnum, int dataLength)
     {
         allNum = allnum;
         rsNum = rsnum;
@@ -644,8 +644,8 @@ public class rscode implements fec{
 //			rscode *rsItem = new rscode();
 
 		    //all data is 10, checksum data is 3, data stripe length is 1024
-		    rscode rsItem = new rscode(10,3,1024);
-//		    rscode rsItem = new rscode();
+		    Rscode rsItem = new Rscode(10,3,1024);
+//		    Rscode rsItem = new Rscode();
 		    int[] err = new int[NUM];
 
 		    // 0 means fault data
