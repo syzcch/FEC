@@ -2,13 +2,13 @@ package fectest;
 import fec.*;
 
 
-public class fectest {
+public class Fectest {
 	
 	public static void main(String[] args) {
 		final int NUM = 7;
 		int[] err = new int[NUM];
 		
-		fec fecCode = new rscode(10,3,1024);
+		Fec fecCode = new Rscode(10,3,1024);
 //		fec fecCode = new starbyte();
 
 		fecCode.setData();
