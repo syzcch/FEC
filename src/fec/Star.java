@@ -4,7 +4,7 @@ import static java.lang.System.out;
 
 import java.util.Arrays;
 
-public class star implements fec{
+public class Star implements Fec{
 
     private int block_size;
     private int p;
@@ -18,7 +18,7 @@ public class star implements fec{
     private static final int DATA_LENGTH = 1024; // default data length 
     private static final int PRIME = 257; // a prime number
     
-    public star()
+    public Star()
     {
         p = PRIME;
         data_disk_nbr = 4;
@@ -36,7 +36,7 @@ public class star implements fec{
         }
     }
     
-    public star(int disk, int prime, int dataLength )
+    public Star(int disk, int prime, int dataLength )
     {
         p = prime;
         data_disk_nbr = disk;
@@ -983,7 +983,7 @@ public class star implements fec{
     		}
     	}
 
-    	if(rs_nbr == 2 && rs_disk1 < data_disk_nbr && rs_disk2 < data_disk_nbr)/*Á½¸öÊý¾ÝÅÌ³ö´í*/
+    	if(rs_nbr == 2 && rs_disk1 < data_disk_nbr && rs_disk2 < data_disk_nbr)/*ä¸¤ä¸ªæ•°æ®ç›˜å‡ºé”™*/
     	{
     		
     		char[] tmp;
@@ -1027,11 +1027,11 @@ public class star implements fec{
     		/*store s~ in tmp*/
 
     		
-    		stripe = (rs_disk1 + p - 1) % p;/*rs_disk1Î´²ÎÓëµÚstripe¸öÌõÎÆµÄ¶Ô½ÇÏßÐ£Ñé*/
+    		stripe = (rs_disk1 + p - 1) % p;/*rs_disk1æœªå‚ä¸Žç¬¬stripeä¸ªæ¡çº¹çš„å¯¹è§’çº¿æ ¡éªŒ*/
     		System.arraycopy(tmp, stripe * block_size, tmp_for_s, 0, block_size);	
     		while(true)
     		{
-    			k = (stripe - rs_disk2 + p) % p;/*µÚrs_disk2¸öÊý¾ÝÅÌµÄµÚk¿éÔÚµÚstripe¸öÌõÎÆ*/
+    			k = (stripe - rs_disk2 + p) % p;/*ç¬¬rs_disk2ä¸ªæ•°æ®ç›˜çš„ç¬¬kå—åœ¨ç¬¬stripeä¸ªæ¡çº¹*/
     			if( k == block_nbr)
     				break;
 
@@ -1067,8 +1067,8 @@ public class star implements fec{
 
         final int NUM = 7;
         int[] err = new int[NUM];
-        star starItem = new star();
-//        star starItem = new star(6,257,1024);
+        Star starItem = new Star();
+//        Star starItem = new Star(6,257,1024);
         
         starItem.setData();
         starItem.encoding();
