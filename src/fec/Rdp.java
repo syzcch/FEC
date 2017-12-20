@@ -23,7 +23,7 @@ public class Rdp implements Fec{
     
     private BitSet inthis;
 
-    public rdp(){
+    public Rdp(){
         this.disks = 4;
         this.pnumRdp = 257;
         this.stripe_unit_size = DATA_LENGTH;
@@ -38,7 +38,7 @@ public class Rdp implements Fec{
 
     }
 	
-    public rdp(int disks, int pnumRdp, int dataLength ){
+    public Rdp(int disks, int pnumRdp, int dataLength ){
         this.pnumRdp = pnumRdp;
         this.stripe_unit_size = dataLength;
         this.w = pnumRdp - 1;
@@ -572,12 +572,12 @@ public class Rdp implements Fec{
 		int[] err = new int[NUM];
 		
 		System.out.println("starting");
-		rdp rdpItem = new rdp();
+		Rdp rdpItem = new Rdp();
 
 		rdpItem.encoding();
 		rdpItem.outputData();
 		
-        for(int i=0;i<NUM;i++){
+        for(int i = 0; i < NUM; i++){
             err[i] = 0;
         }
         
