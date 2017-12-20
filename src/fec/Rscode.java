@@ -21,15 +21,15 @@ public class Rscode implements Fec{
 	static int Modar_M;
 	static int Modar_N;
 	static int Modar_Iam;
-	
+
 	private int num; // original data cols num
 	private char[][] rs; // original data
 	private static final int FT_NUM = 2; //default checksum num
-    private static int gf_already_setup;
-    private int allNum;
-    private static final int DATA_LENGTH = 1024; // default stripe size
-    private int stripe_unit_size;  // stripe size
-    private int rsNum;
+	private static int gf_already_setup;
+	private int allNum;
+	private static final int DATA_LENGTH = 1024; // default stripe size
+	private int stripe_unit_size;  // stripe size
+	private int rsNum;
  //   private int[] inthis;
     private BitSet inthis;
     
