@@ -8,7 +8,7 @@ import java.util.BitSet;
  * @author Roger Song
  *
  */
-public class rdp implements fec{
+public class Rdp implements Fec{
 	
     private int disks;
     private int stripe_unit_size;
@@ -23,64 +23,63 @@ public class rdp implements fec{
     
     private BitSet inthis;
 
-	public rdp(){
-		this.disks = 4;
-		this.pnumRdp = 257;
-		this.stripe_unit_size = DATA_LENGTH;
-		this.w = pnumRdp - 1;
-		this.allDisks = disks + TOLERENCE;
+    public rdp(){
+        this.disks = 4;
+        this.pnumRdp = 257;
+        this.stripe_unit_size = DATA_LENGTH;
+        this.w = pnumRdp - 1;
+        this.allDisks = disks + TOLERENCE;
 
-		idata = new char[allDisks][stripe_unit_size];
-		odata = new char[TOLERENCE][stripe_unit_size];
-		data = new char[allDisks][stripe_unit_size];
-		
-		inthis = new BitSet();
+        idata = new char[allDisks][stripe_unit_size];
+        odata = new char[TOLERENCE][stripe_unit_size];
+        data = new char[allDisks][stripe_unit_size];
 
-	}
+        inthis = new BitSet();
+
+    }
 	
-	public rdp(int disks, int pnumRdp, int dataLength ){
-		this.pnumRdp = pnumRdp;
-		this.stripe_unit_size = dataLength;
-		this.w = pnumRdp - 1;
-		this.disks = disks;
-		this.allDisks = disks + TOLERENCE;
-		
-		idata = new char[allDisks][stripe_unit_size];
-		odata = new char[TOLERENCE][stripe_unit_size];
-		data = new char[allDisks][stripe_unit_size];
-		
-		inthis = new BitSet();
+    public rdp(int disks, int pnumRdp, int dataLength ){
+        this.pnumRdp = pnumRdp;
+        this.stripe_unit_size = dataLength;
+        this.w = pnumRdp - 1;
+        this.disks = disks;
+        this.allDisks = disks + TOLERENCE;
 
-	}
+        idata = new char[allDisks][stripe_unit_size];
+        odata = new char[TOLERENCE][stripe_unit_size];
+        data = new char[allDisks][stripe_unit_size];
+
+        inthis = new BitSet();
+
+    }
 	
-    public void setErrData(int[] err)
-    {
-        for(int i = 0; i < err.length; i++ )
-        {
-        	if(1 == err[i]){
-        		inthis.set(i);
-        	}
+    public void setErrData(int[] err){
+	    
+        for(int i = 0; i < err.length; i++ ){
+            if(1 == err[i]){
+	        inthis.set(i);
+            }
         }
     }
 	
 
-	/**
-	 *  an easy test case
-	 */
-	public void setData(){
+    /**
+     *  an easy test case
+     */
+    public void setData(){
 		for(int i = 0; i < disks; i++){
-			for(int j = 0; j < stripe_unit_size; j++){
-				idata[i][j]=(char) ('a' + i);
-			}
+			 for(int j = 0; j < stripe_unit_size; j++){
+			     idata[i][j]=(char) ('a' + i);
+			 }
 		}
-		
+
 		System.arraycopy(idata[0], 0, odata[0], 0, stripe_unit_size);
 		System.arraycopy(idata[0], 0, odata[1], 0, stripe_unit_size);
-	}
+    }
 	
-	public String showme(){
-		return "RDP";
-	}
+    public String showme(){
+	    return "RDP";
+    }
 	
 
 	/**
