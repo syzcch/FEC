@@ -1068,7 +1068,7 @@ public class Star implements Fec{
         final int NUM = 7;
         int[] err = new int[NUM];
         Star starItem = new Star();
-//        star starItem = new star(6,257,1024);
+//        Star starItem = new Star(6,257,1024);
         
         starItem.setData();
         starItem.encoding();

@@ -436,7 +436,7 @@ public class Starbyte implements Fec{
 					{
 						tmp[2][i] ^= check_data[data_disk_nbr + 2][i];
 					}
-					/*至此,各种s~~已经求出,存放在**tmp中*/
+	                /*至此,各种s~~已经求出,存放在**tmp中*/
 	
 	
 	//				int **tmp_for_xor;
@@ -518,7 +518,7 @@ public class Starbyte implements Fec{
 	//		tmp_for_xor = (int **)malloc( sizeof(int *) * p);
 	        tmp_for_xor = new byte[p][block_size];			
 	
-			/*先求出各种s~~*/
+	        /*先求出各种s~~*/
 			for( i = 0; i < block_nbr; i++)
 			{
 				for( j = 0; j < block_size; j++)
@@ -697,8 +697,8 @@ public class Starbyte implements Fec{
 					}
 				}
 				/*至此,*tmp_for_xor[0] = c[s][u] xor c[s][p-u]  
-				       *tmp_for_xor[i] = c[s][(u + i)%p] xor c[s][ ( p-u+i)%p ]
-					   ...............................................*/
+			       *tmp_for_xor[i] = c[s][(u + i)%p] xor c[s][ ( p-u+i)%p ]
+				   ...............................................*/
 				i = u - 1;
 				k = (u + i) % p;/*c[s][k] xor c[s][p-1] = tmp_for_xor[k],而且c[s][p-1]的值全为零*/
 				for( j = 0; j< block_size; j++)
@@ -723,16 +723,16 @@ public class Starbyte implements Fec{
 			/*
 			if((count[u] == 1) && (count[p-u]==1))
 			{
-				则a[s][u] XOR a[s][p-u] = s XOR s[1][t] XOR s[2][(p-r)%p] XOR s[1][(t+v)%p] XOR ......
+				鍒檃[s][u] XOR a[s][p-u] = s XOR s[1][t] XOR s[2][(p-r)%p] XOR s[1][(t+v)%p] XOR ......
 			}
 			else if(count[u] ==2)
 			{
-			  则s[0][u]和s[0][p-u]都得算上
+			  鍒檚[0][u]鍜宻[0][p-u]閮藉緱绠椾笂
 			}
 			*/
 			}
 	
-			restarts[s] = 0;/*s盘已恢复*/
+			restarts[s] = 0;/*s鐩樺凡鎭㈠*/
 	
 			Evenodd_decoding(restarts);
 	    }
@@ -741,7 +741,7 @@ public class Starbyte implements Fec{
 
     void Evenodd_decoding_1(int rs_disk1, int rs_disk2)/*校验盘是:行校验盘与斜率为负1的对角线校验;类evenodd*/
     {/*这里只处理两种情况:1,一个数据盘错+行校验盘错
-    					  2,两个数据盘错*/
+		  2,两个数据盘错*/
     	
     	int i,j,stripe,k;
 //    	int *tmp;
@@ -864,7 +864,7 @@ public class Starbyte implements Fec{
 //    			memmove( check_data[rs_disk2] + k * block_size, tmp_for_s, block_size * sizeof(int));
  //               memmove( check_data[rs_disk2] + k * block_size, tmp_for_s, block_size * sizeof(char));
                 System.arraycopy(tmp_for_s, 0, check_data[rs_disk2] , k * block_size, block_size);
-    			/*再通过第k块的行校验来恢复rs_disk1中的第k块*/
+                /*再通过第k块的行校验来恢复rs_disk1中的第k块*/
     			for( i = 0; i < block_size; i++)
     			{
     				for( j = 0 ; j <= data_disk_nbr ; j++)
@@ -1033,7 +1033,7 @@ public class Starbyte implements Fec{
 //    		memset(tmp, 0, p*block_size*sizeof(int));
             tmp = new byte[p * block_size];
 
-    		/*先通过行校验与对角线校验算出s*/
+            /*先通过行校验与对角线校验算出s*/
 //    		int *tmp_for_s;
             byte[] tmp_for_s;
 //    		tmp_for_s = (int *)malloc(sizeof(int) * block_size);
@@ -1088,7 +1088,7 @@ public class Starbyte implements Fec{
                 System.arraycopy(tmp_for_s, 0, check_data[rs_disk2],  k * block_size, block_size);	
 
 
-    			/*再通过第k块的行校验来恢复rs_disk1中的第k块*/
+                /*再通过第k块的行校验来恢复rs_disk1中的第k块*/
     			for( j = 0; j < block_size; j++)
     			{
     				for( i = 0; i <= data_disk_nbr; i++)

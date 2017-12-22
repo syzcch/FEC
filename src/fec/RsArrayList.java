@@ -686,11 +686,11 @@ public class RsArrayList implements Fec{
 		public static void main(String[] args) {
 		    final int NUM = 10;
 		    System.out.println("starting");
-//			rscode *rsItem = new rscode();
+//			Rscode *rsItem = new Rscode();
 
 		    //all data is 10, checksum data is 3, data stripe length is 1024
 		    RsArrayList rsItem = new RsArrayList(10,3,1024);
-//		    rscode rsItem = new rscode();
+//		    Rscode rsItem = new Rscode();
 		    int[] err = new int[NUM];
 
 		    // 0 means fault data
