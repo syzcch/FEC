@@ -19,8 +19,8 @@ public class Starbyte implements Fec{
     private static final int DATA_LENGTH = 1024; // default data length 
     private static final int PRIME = 257; // a prime number
     
-    public Starbyte()
-    {
+    public Starbyte(){
+    	
         p = PRIME;
         data_disk_nbr = 4;
         stripe_unit_size = DATA_LENGTH;  //1024
@@ -37,8 +37,8 @@ public class Starbyte implements Fec{
         }
     }
     
-    public Starbyte(int disk, int prime, int dataLength )
-    {
+    public Starbyte(int disk, int prime, int dataLength ){
+    	
         p = prime;
         data_disk_nbr = disk;
         stripe_unit_size = dataLength;
@@ -50,8 +50,7 @@ public class Starbyte implements Fec{
         check_data = new byte[allNum][stripe_unit_size];
 
         restarts = new int[allNum];
-        for(int i = 0; i < allNum; i++)
-        {
+        for(int i = 0; i < allNum; i++){
             restarts[i] = 0;
         }
     }
@@ -59,8 +58,7 @@ public class Starbyte implements Fec{
     /**
 	 *  an easy test case
 	 */
-    public void setData()
-	{
+    public void setData(){
 		for(int i = 0; i < data_disk_nbr; i++){
 			for(int j = 0; j < stripe_unit_size; j++){
 				check_data[i][j]= (byte) ('a' + i);
@@ -69,8 +67,7 @@ public class Starbyte implements Fec{
 	}
 	
     // 1 means error, default value is 0
-	public void setErrData(int[] err)
-    {
+	public void setErrData(int[] err){
         for(int i = 0; i < allNum; i++ )
         {
             restarts[i] = err[i];
@@ -84,12 +81,10 @@ public class Starbyte implements Fec{
     /**
 	 * for testing and debug.
 	 */
-    public void outputData()
-	{
+    public void outputData(){
 		
 		out.println("The res:");
-        for(int i = 0; i < allNum; i++)
-        {
+        for(int i = 0; i < allNum; i++){
         	for(int j = 0; j < stripe_unit_size; j++){
         		out.printf("%c", check_data[i][j]);
         	}
@@ -102,8 +97,7 @@ public class Starbyte implements Fec{
 	public void outputOrigin(){
 		
 		out.println("After decoding:");
-		for(int i=0; i < data_disk_nbr; i++)
-		{
+		for(int i=0; i < data_disk_nbr; i++){
 			out.printf("data:%d:  ",i);
         	for(int j = 0; j < stripe_unit_size; j++){
         		out.printf("%c", check_data[i][j]);
@@ -116,11 +110,10 @@ public class Starbyte implements Fec{
     /**
 	 *  entry function for encoding
 	 */
-    public void encoding() 
-    {
+    public void encoding() {
 
-        if( stripe_unit_size % block_nbr != 0)
-    	{
+        if( stripe_unit_size % block_nbr != 0){
+        	
     		throw new RuntimeException(" Cannot  striping. wrong DATA_LENGTH!");
     	}
         
@@ -130,13 +123,10 @@ public class Starbyte implements Fec{
     }
     
     /*  computing checksum in every row,*check_data[p]  */
-    private void STAR_encoding_row()
-    {
+    private void STAR_encoding_row(){
     	int i,j;
-        for( i = 0; i < stripe_unit_size; i++) 
-    	{
-    		for( j = 0; j < data_disk_nbr; j++) 
-    		{
+        for( i = 0; i < stripe_unit_size; i++) {
+    		for( j = 0; j < data_disk_nbr; j++) {
     			check_data[data_disk_nbr][i] ^= check_data[j][i] ;
     		}
 
@@ -144,22 +134,18 @@ public class Starbyte implements Fec{
     }
     
     /*  computing checksum in every row,*check_data[p]  */
-    void STAR_encoding_diag1()
-    {
+    void STAR_encoding_diag1(){
+    	
     	int i,j,stripe,k;
         byte[][] tmp;
 
         tmp = new byte[block_nbr+1][block_size];
         
-    	for( stripe = 0; stripe < block_nbr+1; stripe++)
-    	{
-    		for( i = 0; i < data_disk_nbr;i++)
-    		{
-    			for( j = 0; j < block_size; j++)
-    			{
+    	for( stripe = 0; stripe < block_nbr+1; stripe++){
+    		for( i = 0; i < data_disk_nbr;i++){
+    			for( j = 0; j < block_size; j++){
     				k = (stripe - i + p) % p;
-    				if( k < block_nbr)
-    				{
+    				if( k < block_nbr){
     					tmp[stripe][j] ^= check_data[i][(stripe - i + p)%p * block_size + j];
 
     				}
@@ -171,17 +157,14 @@ public class Starbyte implements Fec{
     	
        	/*after store diagonal line checksum in tmp[block_nbr]*/
     	/*we need using diagonal line checksum and s to do xor compute */
-    	for( i = 0; i<block_nbr; i++)
-    	{
-    		for( j = 0; j<block_size; j++)
-    		{
+    	for( i = 0; i<block_nbr; i++){
+    		for( j = 0; j<block_size; j++){
     			tmp[i][j] = (byte) (tmp[i][j] ^ tmp[block_nbr][j]);
 
     		}
     	}
 
-    	for( i = 0; i < block_nbr; i++)
-        {
+    	for( i = 0; i < block_nbr; i++){
 //    		memmove(check_data[data_disk_nbr + 1] + (i * block_size), tmp[i], block_size * sizeof(int));
 //            memmove(check_data[data_disk_nbr + 1] + (i * block_size), tmp[i], block_size);
             System.arraycopy(tmp[i], 0, check_data[data_disk_nbr + 1], i * block_size, block_size);
@@ -189,8 +172,7 @@ public class Starbyte implements Fec{
     }
     
     /* diagonal line checksum, slope -1,*check_data[p+2] */
-    void STAR_encoding_diag2()
-    {
+    void STAR_encoding_diag2(){
     	int i,j,stripe,k;
         byte[] tmp;
 
@@ -199,22 +181,17 @@ public class Starbyte implements Fec{
 //    	memset(tmp, 0, p*block_size*sizeof(int));
 //        memset(tmp, 0, p*block_size*sizeof(char));
 
-    	for(stripe = 0; stripe < block_nbr+1; stripe++)
-    	{
-    		for(i = 0; i < data_disk_nbr; i++)
-    		{
-    			for(j = 0; j<block_size; j++)
-    			{
+    	for(stripe = 0; stripe < block_nbr+1; stripe++){
+    		for(i = 0; i < data_disk_nbr; i++){
+    			for(j = 0; j<block_size; j++){
     				k = (stripe + i + p) % p;
     				if( k < block_nbr)
     					tmp[stripe * block_size + j] ^= check_data[i][ k * block_size + j];
     			}
     		}
     	}
-    	for( i = 0; i< block_nbr; i++)
-    	{
-    		for( j = 0; j< block_size; j++)
-    		{
+    	for( i = 0; i< block_nbr; i++){
+    		for( j = 0; j< block_size; j++){
     			tmp[ i * block_size + j] ^= tmp[block_nbr * block_size + j];
     		}
     	}
@@ -236,36 +213,28 @@ public class Starbyte implements Fec{
 		int rs_disk3 = -1;
 	
 	//    if( check_data_size % block_nbr != 0)
-	    if( stripe_unit_size % block_nbr != 0)
-		{
+	    if( stripe_unit_size % block_nbr != 0){
 			throw new RuntimeException(" Cannot  striping. wrong DATA_LENGTH!");
 		}
 	
-	    for(i = 0; i < data_disk_nbr+ 2; i++)
-		{
-			if(restarts[i] == 1)
-			{	
+	    for(i = 0; i < data_disk_nbr+ 2; i++){
+			if(restarts[i] == 1){	
 				rs_disk1 = i;
 				break;
 			}
 		}
-		if( rs_disk1 != -1)
-		{
-			for( i = rs_disk1 + 1; i < data_disk_nbr + 2; i++)
-			{
-				if(restarts[i] == 1)
-				{
+	    
+		if( rs_disk1 != -1){
+			for( i = rs_disk1 + 1; i < data_disk_nbr + 2; i++){
+				if(restarts[i] == 1){
 					rs_disk2 = i;
 					break;
 				}
 			}
 		}
-		if(rs_disk2 != -1)
-		{
-			for( i = rs_disk2 + 1; i < data_disk_nbr + 2; i++)
-			{
-				if(restarts[i] == 1)
-				{
+		if(rs_disk2 != -1){
+			for( i = rs_disk2 + 1; i < data_disk_nbr + 2; i++){
+				if(restarts[i] == 1){
 					rs_disk3 = i;
 					break;
 				}
@@ -290,22 +259,22 @@ public class Starbyte implements Fec{
 	
 //		out.printf("rs_disks : %d %d %d\n", rs_disk1,rs_disk2,rs_disk3);
 	    
-		for( i = 0; i <= data_disk_nbr + 2; i++)
+		for( i = 0; i <= data_disk_nbr + 2; i++){
 			rs_nbr += restarts[i]; 
+		}
 	
-	    if( TOLERENCE < rs_nbr)
-		{
+	    if( TOLERENCE < rs_nbr){
 			throw new RuntimeException(" Too many error data!");
 		}
 	    /*printf("rs_nbr = %d\n",rs_nbr);*/
 	
-		for( i = 0; i < data_disk_nbr; i++)
+		for( i = 0; i < data_disk_nbr; i++){
 			rs_data_nbr += restarts[i];
+		}
 	    
 		rs_check_nbr = rs_nbr - rs_data_nbr;
 	
-	    if(rs_data_nbr == 0)
-		{
+	    if(rs_data_nbr == 0){
 			if(restarts[data_disk_nbr] == 1)
 				STAR_encoding_row();
 			if(restarts[data_disk_nbr + 1] == 1)
@@ -314,23 +283,18 @@ public class Starbyte implements Fec{
 				STAR_encoding_diag2();
 		}
 	
-	    if(rs_data_nbr == 1)
-		{
-			if( rs_check_nbr <= 1)
-			{
+	    if(rs_data_nbr == 1){
+			if( rs_check_nbr <= 1){
 				Evenodd_decoding(restarts);
 				if(restarts[data_disk_nbr + 2] == 1)
 					STAR_encoding_diag2();
 			}
-			if(rs_check_nbr == 2)
-			{
-				if( restarts[data_disk_nbr] == 0)/*row校验盘没出错*/
-				{
+			
+			if(rs_check_nbr == 2){
+				if( restarts[data_disk_nbr] == 0)/*row校验盘没出错*/{
 	//				for( i = 0; i < check_data_size; i++)
-	                for( i = 0; i < stripe_unit_size; i++)
-					{
-						for( j = 0; j <= data_disk_nbr; j++)
-						{
+	                for( i = 0; i < stripe_unit_size; i++){
+						for( j = 0; j <= data_disk_nbr; j++){
 							if( j != rs_disk1)
 								check_data[rs_disk1][i] ^= check_data[j][i];
 						}
@@ -340,13 +304,11 @@ public class Starbyte implements Fec{
 				}
 				if(restarts[data_disk_nbr] == 1)/*row校验盘出错*/
 				{
-					if(restarts[data_disk_nbr + 2] == 1)
-					{
+					if(restarts[data_disk_nbr + 2] == 1){
 						Evenodd_decoding(restarts);
 						STAR_encoding_diag2();
 					}
-					if(restarts[data_disk_nbr + 1] == 1)
-					{
+					if(restarts[data_disk_nbr + 1] == 1){
 						Evenodd_decoding_1(rs_disk1, rs_disk2);
 						STAR_encoding_diag1();
 					}
@@ -354,10 +316,8 @@ public class Starbyte implements Fec{
 			}
 		}
 	
-	    if(rs_data_nbr == 2)
-		{
-			if(rs_check_nbr == 0)
-			{
+	    if(rs_data_nbr == 2){
+			if(rs_check_nbr == 0){
 				Evenodd_decoding(restarts);
 			}
 			else /*rs_check_nbr == 1*/
@@ -374,10 +334,8 @@ public class Starbyte implements Fec{
 	//                tmp_for_s1s2 = (int *)malloc(sizeof(int) * block_size);
 					tmp_for_s1s2 = new byte[block_size];
 	
-					for( i = 0; i < block_nbr; i++)/*算出s1 xor s2的值*/
-					{
-						for( j = 0; j < block_size; j++)
-						{
+					for( i = 0; i < block_nbr; i++)/*算出s1 xor s2的值*/{
+						for( j = 0; j < block_size; j++){
 							tmp_for_s1s2[j] ^= check_data[data_disk_nbr + 1][i * block_size + j];
 							tmp_for_s1s2[j] ^= check_data[data_disk_nbr + 2][i * block_size + j];
 						}
@@ -389,51 +347,39 @@ public class Starbyte implements Fec{
 	                tmp = new byte[3][ p * block_size];
 	
 	//				for( i = 0; i < check_data_size; i++)
-	                for( i = 0; i < stripe_unit_size; i++)
-					{
-						for ( j = 0; j <= data_disk_nbr; j++)
-						{
+	                for( i = 0; i < stripe_unit_size; i++){
+						for ( j = 0; j <= data_disk_nbr; j++){
 							tmp[0][i] ^= check_data[j][i] ;
 						}
 					}
-					for( stripe = 0; stripe < block_nbr + 1; stripe++)
-					{
-						for( i = 0; i < data_disk_nbr; i++)
-						{
-							for( j = 0; j < block_size; j++)
-							{
+					for( stripe = 0; stripe < block_nbr + 1; stripe++){
+						for( i = 0; i < data_disk_nbr; i++){
+							for( j = 0; j < block_size; j++){
 								k = (stripe - i + p) % p;
-								if( k < block_nbr)
-								{
+								if( k < block_nbr){
 									tmp[1][stripe * block_size + j] ^= check_data[i][k * block_size + j];
 								}
 							}
 						}
 					}
 	//   				for(  i = 0; i < check_data_size; i++)
-	                for(  i = 0; i < stripe_unit_size; i++)
-					{
+	                for(  i = 0; i < stripe_unit_size; i++){
 						tmp[1][i] ^= check_data[data_disk_nbr + 1][i];
 					}
 	
 	
-					for( stripe = 0; stripe < block_nbr + 1; stripe++)
-					{
-						for( i = 0; i < data_disk_nbr; i++)
-						{
-							for( j = 0; j < block_size ; j++)
-							{
+					for( stripe = 0; stripe < block_nbr + 1; stripe++){
+						for( i = 0; i < data_disk_nbr; i++){
+							for( j = 0; j < block_size ; j++){
 								 k = (stripe + i + p) % p;
-								 if( k < block_nbr)
-								 {
+								 if( k < block_nbr){
 									 tmp[2][stripe * block_size + j] ^= check_data[i][k * block_size + j];
 								 }
 							}
 						}
 					}
 	//				for( i = 0 ;i < check_data_size; i++)
-	                for( i = 0 ;i < stripe_unit_size; i++)
-					{
+	                for( i = 0 ;i < stripe_unit_size; i++){
 						tmp[2][i] ^= check_data[data_disk_nbr + 2][i];
 					}
 	                /*至此,各种s~~已经求出,存放在**tmp中*/
