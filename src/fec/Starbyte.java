@@ -4,7 +4,7 @@ import static java.lang.System.out;
 
 import java.util.Arrays;
 
-public class starbyte implements fec{
+public class Starbyte implements Fec{
 //    private int  check_data_size;
     private int block_size;
     private int p;
@@ -19,7 +19,7 @@ public class starbyte implements fec{
     private static final int DATA_LENGTH = 1024; // default data length 
     private static final int PRIME = 257; // a prime number
     
-    public starbyte()
+    public Starbyte()
     {
         p = PRIME;
         data_disk_nbr = 4;
@@ -37,7 +37,7 @@ public class starbyte implements fec{
         }
     }
     
-    public starbyte(int disk, int prime, int dataLength )
+    public Starbyte(int disk, int prime, int dataLength )
     {
         p = prime;
         data_disk_nbr = disk;
@@ -1118,7 +1118,7 @@ public class starbyte implements fec{
 
         final int NUM = 7;
         int[] err = new int[NUM];
-        starbyte starItem = new starbyte();
+        Starbyte starItem = new Starbyte();
 //        star starItem = new star(6,257,1024);
         
         starItem.setData();

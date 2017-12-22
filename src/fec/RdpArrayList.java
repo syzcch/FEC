@@ -7,7 +7,7 @@ import java.util.*;
  * @author Roger Song
  *
  */
-public class rdpArrayList implements fec{
+public class RdpArrayList implements Fec{
 	
     private int disks;
     private int stripe_unit_size;
@@ -22,7 +22,7 @@ public class rdpArrayList implements fec{
     
     private BitSet inthis;
 
-	public rdpArrayList(){
+	public RdpArrayList(){
 		this.disks = 4;
 		this.pnumRdp = 257;
 		this.stripe_unit_size = DATA_LENGTH;
@@ -50,7 +50,7 @@ public class rdpArrayList implements fec{
 		}
 	}
 	
-	public rdpArrayList(int disks, int pnumRdp, int dataLength ){
+	public RdpArrayList(int disks, int pnumRdp, int dataLength ){
 		this.pnumRdp = pnumRdp;
 		this.stripe_unit_size = dataLength;
 		this.w = pnumRdp - 1;
@@ -612,7 +612,7 @@ public class rdpArrayList implements fec{
 		int[] err = new int[NUM];
 		
 		System.out.println("starting");
-		rdpArrayList rdpItem = new rdpArrayList();
+		RdpArrayList rdpItem = new RdpArrayList();
 
 		rdpItem.encoding();
 		rdpItem.outputData();
