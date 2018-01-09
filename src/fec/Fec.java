@@ -1,18 +1,19 @@
 package fec;
 
-public interface Fec {
+public interface Fec
+{
 
-	public void setErrData(int[] err);
+    public void setErrData(int[] err);
 
-	public void setData();
+    public void setData();
 
-	public String showme();
+    public String showme();
 
-	public void encoding();
+    public void encoding();
 
-	public void decoding();
+    public void decoding();
 
-	public void outputOrigin();
+    public void outputOrigin();
 
-	public void outputData();
+    public void outputData();
 }
